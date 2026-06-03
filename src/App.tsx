@@ -2,17 +2,12 @@ import React, { useState, useEffect, Component, ErrorInfo, ReactNode } from "rea
 import { RefreshCw } from "lucide-react";
 import { Profile, JobMatch, Application, AuditMessage, SectorPack } from "./types";
 import Navigation from "./components/Navigation";
-import DashboardView from "./components/DashboardView";
-import CareerVaultView from "./components/CareerVaultView";
 import ResumeStudioView from "./components/ResumeStudioView";
 import SectorPacksView from "./components/SectorPacksView";
-import JobsView from "./components/JobsView";
-import ApplicationsView from "./components/ApplicationsView";
 import AnalyticsView from "./components/AnalyticsView";
 import SettingsView from "./components/SettingsView";
 import WorkspaceStudioView from "./components/WorkspaceStudioView";
 import AdminWorkspace from "./components/AdminWorkspace";
-import AutopilotConsoleView from "./components/AutopilotConsoleView";
 import ReviewWorkspace from "./components/ReviewWorkspace";
 import ResolveWorkspace from "./components/ResolveWorkspace";
 
