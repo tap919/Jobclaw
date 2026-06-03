@@ -13,6 +13,8 @@ import SettingsView from "./components/SettingsView";
 import WorkspaceStudioView from "./components/WorkspaceStudioView";
 import AdminWorkspace from "./components/AdminWorkspace";
 import AutopilotConsoleView from "./components/AutopilotConsoleView";
+import ReviewWorkspace from "./components/ReviewWorkspace";
+import ResolveWorkspace from "./components/ResolveWorkspace";
 
 class ErrorBoundary extends React.Component<{ children: ReactNode }, { hasError: boolean; error: Error | null }> {
   constructor(props: { children: ReactNode }) {
@@ -53,7 +55,7 @@ class ErrorBoundary extends React.Component<{ children: ReactNode }, { hasError:
 }
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<string>("dashboard");
+  const [activeWorkspace, setActiveWorkspace] = useState<string>("review");
   const [geminiConnected, setGeminiConnected] = useState<boolean | null>(null);
 
   // States
@@ -176,7 +178,7 @@ export default function App() {
         if (appData.status === "success") {
           setApplications(appData.applications);
         }
-        setActiveTab("applications");
+        setActiveWorkspace("review"); // Navigate to review workspace to show applications
       }
     } catch (e) {
       console.error(e);
@@ -233,125 +235,68 @@ export default function App() {
   return (
     <ErrorBoundary>
       <div id="jobclaw-application" className="flex h-screen w-screen bg-[#0A0A0A] overflow-hidden font-sans text-slate-300">
-      
-      {/* SIDEBAR NAVIGATION GRID */}
-      <Navigation
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        geminiConnected={geminiConnected}
-        profileName={profile.contactInfo.fullName}
-      />
+        {/* SIDEBAR NAVIGATION GRID */}
+        <Navigation
+          activeTab={activeWorkspace}
+          setActiveTab={setActiveWorkspace}
+          geminiConnected={geminiConnected}
+          profileName={profile.contactInfo.fullName}
+        />
 
-      {/* MAIN SCREEN DOCK */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden bg-[#0A0A0A]">
-        
-        {/* Upper Desk Panel status elements */}
-        <header className="px-8 py-4.5 border-b border-[#222222] flex items-center justify-between shrink-0 bg-[#0A0A0A]">
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-blue-500" />
-            <h2 className="text-white text-xs font-mono font-bold uppercase tracking-wider">
-              Desk Workspace -- Texas Core Engine v1.0.4
-            </h2>
-          </div>
-          
-          <div className="flex items-center gap-4 text-xs">
-            <span className="text-slate-500 font-mono text-[11px]">User TAP919BEATS Verified</span>
-            <span className="text-slate-600">|</span>
-            <div className="px-2.5 py-1 rounded bg-[#111111] border border-[#222222] text-[10.5px] font-semibold text-slate-400">
-              TX/AUSTIN CENTRAL TIME
+        {/* MAIN SCREEN DOCK */}
+        <main className="flex-1 flex flex-col h-full overflow-hidden bg-[#0A0A0A]">
+          {/* Upper Desk Panel status elements */}
+          <header className="px-8 py-4.5 border-b border-[#222222] flex items-center justify-between shrink-0 bg-[#0A0A0A]">
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-blue-500" />
+              <h2 className="text-white text-xs font-mono font-bold uppercase tracking-wider">
+                Desk Workspace -- Texas Core Engine v1.0.4
+              </h2>
             </div>
+            
+            <div className="flex items-center gap-4 text-xs">
+              <span className="text-slate-500 font-mono text-[11px]">User TAP919BEATS Verified</span>
+              <span className="text-slate-600">|</span>
+              <div className="px-2.5 py-1 rounded bg-[#111111] border border-[#222222] text-[10.5px] font-semibold text-slate-400">
+                TX/AUSTIN CENTRAL TIME
+              </div>
+            </div>
+          </header>
+
+          {/* Content canvas with scroll margins */}
+          <div className="flex-1 p-8 overflow-y-auto block">
+            {activeWorkspace === "review" && (
+              <ReviewWorkspace
+                profile={profile}
+                jobs={jobs}
+                applications={applications}
+                audits={audits}
+                geminiConnected={geminiConnected}
+                setActiveWorkspace={setActiveWorkspace}
+                onUpdateProfile={handleUpdateProfile}
+                onSelectJob={setChosenTailorJob}
+                onIngestJob={handleIngestJob}
+                onTriggerApplicationTracking={handleTriggerApplicationTracking}
+                onUpdateApplicationStatus={handleUpdateApplicationStatus}
+                onUpdateApplicationDocs={handleUpdateApplicationDocs}
+              />
+            )}
+            
+            {activeWorkspace === "resolve" && (
+              <ResolveWorkspace setActiveWorkspace={setActiveWorkspace} />
+            )}
+            
+            {activeWorkspace === "admin" && (
+              <AdminWorkspace />
+            )}
           </div>
-        </header>
 
-        {/* Content canvas with scroll margins */}
-        <div className="flex-1 p-8 overflow-y-auto block">
-          
-          {/* Dynamic tabs controller using React transition layouts */}
-          {activeTab === "dashboard" && (
-            <DashboardView
-              profile={profile}
-              jobs={jobs}
-              applications={applications}
-              audits={audits}
-              setActiveTab={setActiveTab}
-              onSelectJob={(j) => setChosenTailorJob(j)}
-              geminiConnected={geminiConnected}
-            />
-          )}
-
-          {activeTab === "vault" && (
-            <CareerVaultView
-              profile={profile}
-              onUpdateProfile={handleUpdateProfile}
-              geminiConnected={geminiConnected}
-            />
-          )}
-
-          {activeTab === "studio" && (
-            <ResumeStudioView
-              profile={profile}
-              jobs={jobs}
-              selectedJobForTailoring={chosenTailorJob}
-              geminiConnected={geminiConnected}
-            />
-          )}
-
-          {activeTab === "sectors" && (
-            <SectorPacksView packs={sectorPacks} />
-          )}
-
-          {activeTab === "jobs" && (
-            <JobsView
-              jobs={jobs}
-              profile={profile}
-              onSelectJob={(j) => setChosenTailorJob(j)}
-              onIngestJob={handleIngestJob}
-              onTriggerApplicationTracking={handleTriggerApplicationTracking}
-            />
-          )}
-
-          {activeTab === "applications" && (
-            <ApplicationsView
-              applications={applications}
-              onUpdateApplicationStatus={handleUpdateApplicationStatus}
-              onUpdateApplicationDocs={handleUpdateApplicationDocs}
-            />
-          )}
-
-          {activeTab === "autopilot" && (
-            <AutopilotConsoleView />
-          )}
-
-          {activeTab === "workspace" && (
-            <WorkspaceStudioView
-              jobs={jobs}
-              applications={applications}
-              onTriggerApplicationTracking={handleTriggerApplicationTracking}
-            />
-          )}
-
-          {activeTab === "analytics" && (
-            <AnalyticsView />
-          )}
-
-           {activeTab === "settings" && (
-             <SettingsView geminiConnected={geminiConnected} />
-           )}
-           
-           {activeTab === "admin" && (
-             <AdminWorkspace />
-           )}
-
-        </div>
-
-        {/* Outer bottom bezel */}
-        <footer className="px-8 py-3 bg-[#0A0A0A] border-t border-[#222222] flex items-center justify-between text-[10px] text-slate-500 shrink-0 font-mono">
-          <span>Austin Developer Sandbox Security Mode ACTIVE</span>
-          <span>© 2026 JobClaw Inc. All rights reserved.</span>
-        </footer>
-
-      </main>
-
+          {/* Outer bottom bezel */}
+          <footer className="px-8 py-3 bg-[#0A0A0A] border-t border-[#222222] flex items-center justify-between text-[10px] text-slate-500 shrink-0 font-mono">
+            <span>Austin Developer Sandbox Security Mode ACTIVE</span>
+            <span>© 2026 JobClaw Inc. All rights reserved.</span>
+          </footer>
+        </main>
       </div>
     </ErrorBoundary>
   );
