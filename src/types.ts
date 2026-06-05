@@ -197,6 +197,9 @@ export interface QueueItem {
   logs: string[];
   selectorSnapshot?: string;
   formPayload?: Record<string, unknown>;
+  externalId?: string;
+  sourceType?: 'adzuna' | 'jooble' | 'manual' | 'mock';
+  sourceUrl?: string;
 }
 
 export interface AutopilotLog {

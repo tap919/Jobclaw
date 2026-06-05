@@ -8,6 +8,7 @@ import { Profile, JobMatch, Application, Experience, BulletPoint, AutopilotRuleS
 import { z } from "zod";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
+import { loadState, saveState } from "./src/server/lib/persistence";
 
 const JobSchema = z.object({
   title: z.string().min(1).max(200),
@@ -214,137 +215,10 @@ let userProfile: Profile = {
 };
 
 // Seed jobs collection
-let jobPool: JobMatch[] = [
-  {
-    id: "job-1",
-    company: "Stripe",
-    title: "Senior Core Full Stack Engineer - SaaS Dashboard",
-    description: `We are looking for a Senior Full Stack Engineer to build, refine, and optimize the merchant onboarding experience. You will collaborate with product partners to design responsive developer consoles, integrate highly performant REST and GraphQL APIs, and guarantee millisecond rendering speeds.
-Duties:
-- Refactor dashboard layouts to increase merchant configuration conversions.
-- Ensure 100% test coverage across core merchant metrics screens.
-- Implement high-throughput backends using Express, Node.js, and Redis caching.
-Requirements:
-- 5+ years of active industry experience using TypeScript and React.
-- Solid understanding of server performance, caching topologies, and CI/CD pipelines.
-- Metric-oriented mindset. Experience documenting system performance impacts.`,
-    location: "San Francisco, CA (Hybrid / Austin friendly)",
-    salary: "$160,000 - $185,000 + Equity",
-    requiredSkills: ["TypeScript", "React", "Node.js", "Express", "Redis Caching", "Performance optimization"],
-    preferredSkills: ["GraphQL", "CI/CD Pipelines", "Docker"],
-    seniority: "Senior",
-    source: "Company Dashboard RSS",
-    sourceUrl: "https://stripe.com/careers/senior-full-stack",
-    fitScore: 94,
-    breakdown: {
-      keywordOverlapScore: 92,
-      requiredOverlapScore: 96,
-      seniorityFitScore: 100,
-      transferableOverlapScore: 88,
-      salaryAlignmentScore: 95,
-    },
-    ingestedAt: "2026-06-02T10:00:00Z",
-    freshnessScore: 98,
-    isRecommended: true
-  },
-  {
-    id: "job-2",
-    company: "Okta",
-    title: "Lead Cloud Platform Software Engineer",
-    description: `As a Lead Platform Engineer inside our Identity Core Group, you will guide infrastructure scaling across thousands of Docker container microservices.
-Duties:
-- Architect reliable AWS cloud migration processes reducing legacy hosting structures.
-- Champion cloud infrastructure reliability. Manage container provisioning and pipeline latency.
-- Mentor junior engineers to enforce modern TypeScript type safety standards.
-Requirements:
-- Strong history managing AWS clusters, ECS, Docker tasks, and Kubernetes (CKA a plus).
-- Passion for optimizing cloud costs and container orchestration schedules.`,
-    location: "Austin, TX (Hybrid)",
-    salary: "$170,000 - $190,000",
-    requiredSkills: ["AWS ECS", "Docker", "SaaS Core Group", "Kubernetes", "TypeScript", "CI/CD Pipelines"],
-    preferredSkills: ["Terraform", "CKA", "AWS Solutions Architect"],
-    seniority: "Lead",
-    source: "Direct Connector API",
-    sourceUrl: "https://okta.com/jobs/lead-cloud-platform",
-    fitScore: 89,
-    breakdown: {
-      keywordOverlapScore: 85,
-      requiredOverlapScore: 90,
-      seniorityFitScore: 85,
-      transferableOverlapScore: 95,
-      salaryAlignmentScore: 90,
-    },
-    ingestedAt: "2026-06-01T15:30:00Z",
-    freshnessScore: 92,
-    isRecommended: true
-  },
-  {
-    id: "job-3",
-    company: "Synthesia",
-    title: "SaaS General Frontend Engineer (React 19 / Vite)",
-    description: `Join us in Austin to craft state-of-the-art visual generator dashboards.
-Requirements:
-- Strong experience with Tailwind CSS, React 19 concurrent features, and bundlers like Vite.
-- 3+ years writing client-side applications with complex interfaces and high-fidelity rendering loops.
-- Nice to have: experience with modern AI model interactions or canvas manipulation.`,
-    location: "Austin, TX (On-site)",
-    salary: "$120,000 - $145,000",
-    requiredSkills: ["React 19", "Tailwind CSS", "Vite", "TypeScript"],
-    preferredSkills: ["Canvas", "Microservices", "Docker"],
-    seniority: "Mid-Senior",
-    source: "User Pasted URL",
-    sourceUrl: "https://synthesia.io/careers/frontend-engineer",
-    fitScore: 82,
-    breakdown: {
-      keywordOverlapScore: 80,
-      requiredOverlapScore: 85,
-      seniorityFitScore: 90,
-      transferableOverlapScore: 70,
-      salaryAlignmentScore: 85,
-    },
-    ingestedAt: "2026-05-30T09:00:00Z",
-    freshnessScore: 75,
-    isRecommended: false
-  }
-];
+let jobPool: JobMatch[] = [];
 
 // Seed applications tracking database
-let applications: Application[] = [
-  {
-    id: "app-1",
-    jobId: "job-1",
-    jobTitle: "Senior Core Full Stack Engineer - SaaS Dashboard",
-    companyName: "Stripe",
-    status: "Shortlisted",
-    resumeVariantId: "variant-master",
-    coverLetter: `Dear Stripe Hiring Team,
-
-I am writing to express my enthusiastic interest in the Senior Core Full Stack Engineer position. Having managed high-load developer consoles and SaaS pipelines for over 7 yearsâ€”most recently leading core rendering improvements at CloudScale Technologiesâ€”I am well-equipped to elevate Stripe's merchant dashboard capabilities.
-
-My background aligns closely with Stripe's technical stack and performance priorities:
-1. Metric-first engineering: At CloudScale, I refactored our core events pipeline, boosting Daily Ingestion capacity from 2M to 15M records while lowering DB overhead by 35%. I approach architectures from a systematic performance perspective.
-2. Front-end optimization: I have sliced First Contentful Paint times by 1.2s utilizing concurrent React features and Vite, directly improving day-to-day diagnostics usability.
-3. Trust and verification: Every metric listed in my history is linked to traceable system analytics (Lighthouse audits, Jira Epic post-mortems), ensuring absolute interview integrity.
-
-I welcome the opportunity to discuss how my SaaS experience can deliver high-speed, robust results for Stripe merchants. Thank you for your consideration.
-
-Sincerely,
-Alex Rivera`,
-    outreachNotes: "Hi Stripe Talent Acquisition Team, I have just submitted my styled ATS-validated candidate pack for the SaaS Dashboard team! I'm local to Austin but fully equipped for hybrid San Francisco teams. Looking forward to discussing developer portal performance optimization!",
-    verificationAuditPassed: true,
-    approvalPolicyStatus: "Ready for Review",
-    timeline: [
-      {
-        id: "t-1",
-        status: "Shortlisted",
-        note: "Job imported and mapped against Core Master Profile with high matching confidence (94%). Ready for resume refinery tailoring.",
-        timestamp: "2026-06-02T11:15:00Z"
-      }
-    ],
-    interviewStages: ["Screen call", "Systems Architecture Round", "Frontend Coding Panel", "Fireside Leadership"],
-    notes: "Stripe dashboard role matches experience perfectly. Focus on high-throughput Event engine and concurrent React telemetry panel speedups during interviews."
-  }
-];
+let applications: Application[] = [];
 
 // Available sector packs
 const sectorPacks = [
@@ -400,6 +274,7 @@ app.post("/api/profile", (req, res) => {
     if (typeof req.body.workAuthorization === "string") userProfile.workAuthorization = req.body.workAuthorization;
 
     res.json({ status: "success", message: "Master Profile updated securely.", profile: userProfile });
+    persistAll();
   } else {
     res.status(400).json({ status: "error", message: "Invalid profile data format." });
   }
@@ -581,6 +456,7 @@ Return ONLY valid JSON. No extra text.`,
     extractedLength: extractedText.length,
     source: src
   });
+  persistAll();
 }));
 
 // Sector Packs GET
@@ -638,6 +514,7 @@ app.post("/api/jobs", (req, res) => {
   };
 
   jobPool.unshift(newJob);
+  persistAll();
   res.json({ status: "success", message: "Job successfully ingested and scored.", job: newJob });
 });
 
@@ -747,6 +624,7 @@ app.post("/api/applications", (req, res) => {
       timeline: [...applications[existingAppIdx].timeline, freshTimelineItem]
     };
 
+    persistAll();
     return res.json({ status: "success", message: "Application details synchronized.", application: applications[existingAppIdx] });
   } else {
     // Create new application record
@@ -774,6 +652,7 @@ app.post("/api/applications", (req, res) => {
     };
 
     applications.push(newApp);
+    persistAll();
     return res.json({ status: "success", message: "Application tracking started successfully.", application: newApp });
   }
 });
@@ -812,6 +691,7 @@ app.patch("/api/applications/:id", (req, res) => {
     applications[targetIdx].outreachNotes = outreachNotes;
   }
 
+  persistAll();
   res.json({ status: "success", message: "Pipeline status updated successfully.", application: applications[targetIdx] });
 });
 
@@ -1260,52 +1140,11 @@ Output ONLY the raw valid JSON. No conversational intro/outro text.`;
 let autopilotIsRunning = false;
 let autopilotLastRun = new Date().toISOString();
 let autopilotLogCounter = 0;
-let autopilotLogs: AutopilotLog[] = [
-  {
-    id: "log-1",
-    timestamp: new Date(Date.now() - 4 * 3600000).toISOString(),
-    cron: "job_ingest_cron",
-    level: "info",
-    message: "Triggered active feed crawl. Connected to Lever & Greenhouse aggregate sandbox lists. Found 4 matching developers vacancies.",
-    type: "deterministic"
-  },
-  {
-    id: "log-2",
-    timestamp: new Date(Date.now() - 3.8 * 3600000).toISOString(),
-    cron: "job_rank_cron",
-    level: "success",
-    message: "Scored 4 discovered vacancies. Calculated 94% fit for Stripe role, 91% for Okta role, and 71% for Snowflake mid-level role (below compensation rules block).",
-    type: "deterministic"
-  },
-  {
-    id: "log-3",
-    timestamp: new Date(Date.now() - 3.5 * 3600000).toISOString(),
-    cron: "application_prepare_cron",
-    level: "info",
-    message: "Auto-assigning resume templates. Draft pre-filling matching synonym dictionary is 100% complete for Stripe (Lever) and Okta (Greenhouse).",
-    type: "deterministic"
-  },
-  {
-    id: "log-4",
-    timestamp: new Date(Date.now() - 3 * 3600000).toISOString(),
-    cron: "submission_cron",
-    level: "success",
-    message: "Laid down browser worker on Stripe (Lever). Scraped inputs, resolved syns, uploaded ATS resume variant, validated checkbox items and applied successfully.",
-    type: "deterministic"
-  },
-  {
-    id: "log-5",
-    timestamp: new Date(Date.now() - 2.5 * 3600000).toISOString(),
-    cron: "gmail_sync_cron",
-    level: "info",
-    message: "Scanning recruiting inbox. Located Stripe notification code email (Application received). Parsing thread. State logged into tracked panel.",
-    type: "deterministic"
-  }
-];
+let autopilotLogs: AutopilotLog[] = [];
 
 let autopilotRules: AutopilotRuleSet = {
-    minFitScore: 65,
-    compensationFloor: 120000,
+    minFitScore: 55,
+    compensationFloor: 40000,
   remotePreference: "Hybrid/Remote",
   maxCommute: 25,
   applicationsPerHourLimit: 3,
@@ -1322,17 +1161,8 @@ let autopilotSkills: AutopilotSkillRegistry = {
     veteranChoice: "I decline to self-identify",
     consentToBgCheck: "Yes"
   },
-  synonymDictionary: {
-    "Current Employer": "CloudScale Technologies",
-    "Present Company": "CloudScale Technologies",
-    "Recent Position": "Senior Software Engineer",
-    "Current Position": "Senior Software Engineer",
-    "Salary Expectation": "$145,000",
-    "Compensation Target": "$145,000",
-    "Notice Period": "2 weeks"
-  },
+  synonymDictionary: {},
   screeningQA: {
-    "Do you have experience with TypeScript?": "Yes, over 7+ years of rich enterprise application experience.",
     "Are you authorized to work in the United States?": "Yes",
     "Do you require visa sponsorship now or in the future?": "No",
     "Will you complete a standard background check?": "Yes"
@@ -1345,89 +1175,34 @@ let autopilotSkills: AutopilotSkillRegistry = {
   }
 };
 
-let autopilotQueue: QueueItem[] = [
-  {
-    id: "aq-1",
-    jobTitle: "Senior Full Stack Dev - Remote",
-    companyName: "Stripe",
-    fitScore: 94,
-    seniority: "Senior",
-    compensation: "$165,000",
-    state: "tracked",
-    resumeVariant: "ATS - SaaS Expert",
-    lastActionDate: new Date(Date.now() - 3600000).toISOString(),
-    logs: [
-      "Job discovered via index crawler.",
-      "Job normalized with ID stripe-902.",
-      "Computed high-match fit score (94%) based on TypeScript & React match.",
-      "Assigned resume pre-set variant (ATS - SaaS Expert).",
-      "Field mapping matched 12 elements cleanly.",
-      "SubmissionGuard verified form payload.",
-      "Laid down browser worker: filling inputs on Lever submit form.",
-      "Form submission validation passed directly.",
-      "Confirmation page detected: HTTP 200 OK. Application registered.",
-      "Synced submission callback with Gmail sync, state set to tracked."
-    ],
-    selectorSnapshot: "Lever ATS. Form fields found: name, email, github, resume. All 100% matched.",
-    formPayload: { "name": "Jane Doe", "email": "hidden@example.com", "github": "github.com/hidden" }
-  },
-  {
-    id: "aq-2",
-    jobTitle: "Senior Software Architect",
-    companyName: "Okta Inc",
-    fitScore: 91,
-    seniority: "Senior/Lead",
-    compensation: "$180,000",
-    state: "validation_passed",
-    resumeVariant: "React + Cloud Security",
-    lastActionDate: new Date().toISOString(),
-    logs: [
-      "Job discovered through indexed Greenhouse postings crawler.",
-      "Title parsed successfully (Senior Software Architect).",
-      "Calculated fit score of 91% based on AWS microservices match.",
-      "Assigned tailored variant (React + Cloud Security).",
-      "Matched synonym inputs database for 14 custom fields.",
-      "No missing questionnaire markers. Validation passed."
-    ],
-    selectorSnapshot: "Greenhouse API structure. 14 targets identified. Ready for browser worker launch."
-  },
-  {
-    id: "aq-3",
-    jobTitle: "Cloud Infrastructure Dev",
-    companyName: "Vercel",
-    fitScore: 84,
-    seniority: "Senior",
-    compensation: "$150,000",
-    state: "prepared",
-    resumeVariant: "Default Core CV",
-    lastActionDate: new Date(Date.now() - 10000).toISOString(),
-    logs: [
-      "Discovered on candidate board.",
-      "Parsed required skills matches (Docker, AWS, Nodejs). Score calculated (84%).",
-      "Assigned core CV.",
-      "Filled candidate form template packets."
-    ]
-  },
-  {
-    id: "aq-4",
-    jobTitle: "Full-Stack Engineer - Backend focus",
-    companyName: "Snowflake",
-    fitScore: 71,
-    seniority: "Mid",
-    compensation: "$110,000",
-    state: "error",
-    errorType: "policy_blocked",
-    errorMessage: "Policy Limit: Compensation Floor Violation ($110,000 offered vs $120,000 limit).",
-    resumeVariant: "None Assigned",
-    lastActionDate: new Date(Date.now() - 5000).toISOString(),
-    logs: [
-      "Job discovered through crawler ingest.",
-      "Parsed required skills and normalized posting metadata.",
-      "Computed fit score of 71%.",
-      "Policy blocked during rank stage because compensation was below configured minimum."
-    ]
-  }
-];
+let autopilotQueue: QueueItem[] = [];
+
+// =========================================================================
+// PERSISTENCE: Load saved state from disk on startup, save on every change
+// =========================================================================
+const _saved = loadState();
+if (_saved.userProfile) userProfile = _saved.userProfile as Profile;
+if (_saved.jobPool && Array.isArray(_saved.jobPool)) jobPool = _saved.jobPool as JobMatch[];
+if (_saved.applications && Array.isArray(_saved.applications)) applications = _saved.applications as Application[];
+if (_saved.autopilotQueue && Array.isArray(_saved.autopilotQueue)) autopilotQueue = _saved.autopilotQueue as QueueItem[];
+if (_saved.autopilotLogs && Array.isArray(_saved.autopilotLogs)) autopilotLogs = _saved.autopilotLogs as AutopilotLog[];
+if (_saved.autopilotRules) autopilotRules = _saved.autopilotRules as AutopilotRuleSet;
+if (_saved.autopilotSkills) autopilotSkills = _saved.autopilotSkills as AutopilotSkillRegistry;
+if (autopilotLogs.length > 0) {
+  autopilotLogCounter = Math.max(...autopilotLogs.map(l => parseInt(String(l.id).split('-').pop() || '0', 10))) + 1;
+}
+
+function persistAll() {
+  saveState({
+    userProfile,
+    jobPool,
+    applications,
+    autopilotQueue,
+    autopilotLogs,
+    autopilotRules,
+    autopilotSkills
+  });
+}
 
 // GET State
 app.get("/api/autopilot/state", (req, res) => {
@@ -1475,6 +1250,7 @@ app.post("/api/autopilot/update-rules", (req, res) => {
   });
 
   res.json({ status: "success", rules: autopilotRules, logs: autopilotLogs });
+  persistAll();
 });
 
 // Update Skills
@@ -1516,62 +1292,131 @@ app.post("/api/autopilot/update-skills", (req, res) => {
   });
 
   res.json({ status: "success", skills: autopilotSkills, logs: autopilotLogs });
+  persistAll();
 });
 
 // Shared cron stage executor (used by HTTP handler and continuous loop)
-function executeCronStage(cronName: string): string {
+async function executeCronStage(cronName: string): Promise<string> {
   const timestamp = new Date().toISOString();
   autopilotLastRun = timestamp;
 
   if (cronName === "job_ingest_cron") {
-    // Generate profile-aware jobs using targetRoles, targetSectors, and skills
-    const roles = userProfile.targetRoles.length > 0 ? userProfile.targetRoles : ["Senior Software Engineer", "Full Stack Engineer"];
-    const sectors = userProfile.targetSectors.length > 0 ? userProfile.targetSectors : ["Technology", "Enterprise SaaS"];
-    const skills = userProfile.skills.length > 0 ? userProfile.skills : ["TypeScript", "React", "Node.js"];
+    // Pull real jobs from Adzuna for each of the user's target roles.
+    // No mock data is generated: if no API key is set, this stage logs a warning
+    // and produces no queue items, so the rest of the pipeline has nothing to process.
+    const adzunaAppId = process.env.ADZUNA_APP_ID;
+    const adzunaAppKey = process.env.ADZUNA_APP_KEY;
+    const adzunaCountry = process.env.ADZUNA_COUNTRY || "us";
 
-    const companyPool = [
-      `${sectors[0]} Corp`, `${sectors[sectors.length > 1 ? 1 : 0]} Inc`,
-      `Nova${sectors[0].replace(/\s+/g, "")}`, `Atlas ${sectors[sectors.length > 1 ? 1 : 0]}`,
-      "Vercel", "Stripe", "Okta", "Synthesia", "Retool"
-    ];
+    if (!adzunaAppId || !adzunaAppKey) {
+      autopilotLogs.unshift({
+        id: `log-${Date.now()}-${autopilotLogCounter++}`,
+        timestamp,
+        cron: "job_ingest_cron",
+        level: "warn",
+        message: "ADZUNA_APP_ID and ADZUNA_APP_KEY are not set in .env. Skipping real job ingest. Sign up free at https://developer.adzuna.com/ and add credentials to enable live job discovery.",
+        type: "deterministic"
+      });
+      return;
+    }
 
-    const newJobsQueue: QueueItem[] = [0, 1].map(i => {
-      const role = roles[i % roles.length];
-      const company = companyPool[Math.floor(Math.random() * companyPool.length)];
-      const salaryBase = 140 + Math.floor(Math.random() * 60);
-      const salary = `$${salaryBase},000`;
+    const roles = userProfile.targetRoles.length > 0 ? userProfile.targetRoles : ["Warehouse Associate"];
+    const where = userProfile.contactInfo?.location || "United States";
+    const skills = userProfile.skills.length > 0 ? userProfile.skills : [];
 
-      // Score based on skill overlap with the role title
-      const roleWords = role.toLowerCase().split(/\s+/);
-      const matchingSkills = skills.filter(s => roleWords.some(w => s.toLowerCase().includes(w)));
-      const overlapRatio = Math.min(1, matchingSkills.length / Math.max(1, roleWords.length));
-      const fitScore = Math.min(98, Math.round(82 + (overlapRatio * 10) + Math.random() * 6)); // Base 82 for direct role match, plus skill overlap and randomness
+    const newJobsQueue: QueueItem[] = [];
 
-      return {
-        id: `aq-ingest-${Date.now()}-${i}`,
-        jobTitle: role,
-        companyName: company,
-        fitScore,
-        seniority: role.toLowerCase().includes("senior") || role.toLowerCase().includes("lead") ? "Senior" : "Mid",
-        compensation: salary,
-        state: "discovered" as const,
-        resumeVariant: "ATS - SaaS Expert",
-        lastActionDate: timestamp,
-        logs: [`Discovered via ${company.toLowerCase().replace(/\s+/g, "")} aggregator feed.`]
-      };
-    });
+    // Lazy-load the adapter so missing dependencies at startup don't kill the server
+    let adapter: any;
+    try {
+      const mod = await import("./src/server/lib/realJobAdapter");
+      adapter = new mod.AdzunaAdapter(adzunaAppId, adzunaAppKey);
+    } catch (err) {
+      autopilotLogs.unshift({
+        id: `log-${Date.now()}-${autopilotLogCounter++}`,
+        timestamp,
+        cron: "job_ingest_cron",
+        level: "error",
+        message: `Failed to load real job adapter: ${(err as Error).message}`,
+        type: "deterministic"
+      });
+      return;
+    }
 
-    autopilotQueue = [...newJobsQueue, ...autopilotQueue];
+    // Dedupe: skip external IDs we've already pulled in this run
+    const seenExternalIds = new Set(autopilotQueue.map(q => (q as any).externalId).filter(Boolean));
+    let totalFetched = 0;
+    let fetchErrors: string[] = [];
+
+    for (let i = 0; i < roles.length; i++) {
+      const role = roles[i];
+      try {
+        const results = await adapter.fetchNormalized({
+          what: role,
+          where,
+          resultsPerPage: 10,
+          page: 1,
+          country: adzunaCountry,
+          maxDaysOld: 14
+        });
+        totalFetched += results.length;
+
+        for (const job of results) {
+          if (seenExternalIds.has(job.externalId)) continue;
+          seenExternalIds.add(job.externalId);
+
+          // Score based on skill/keyword overlap with the job title + description
+          const roleWords = (job.jobTitle + " " + job.description).toLowerCase();
+          const matchingSkills = skills.filter(s => roleWords.includes(s.toLowerCase()));
+          const overlapRatio = Math.min(1, matchingSkills.length / Math.max(1, skills.length || 1));
+          const baseScore = 60;
+          const fitScore = Math.min(98, Math.round(baseScore + (overlapRatio * 30) + Math.random() * 8));
+
+          newJobsQueue.push({
+            id: `aq-ingest-${Date.now()}-${newJobsQueue.length}`,
+            jobTitle: job.jobTitle,
+            companyName: job.companyName,
+            fitScore,
+            seniority: /senior|lead|supervisor|manager|director/i.test(job.jobTitle) ? "Senior" : "Mid",
+            compensation: job.compensation,
+            state: "discovered" as const,
+            resumeVariant: "ATS - General Professional",
+            lastActionDate: timestamp,
+            logs: [`Discovered via Adzuna API for query "${role}" at ${job.companyName} (${job.location}). Apply: ${job.sourceUrl}`],
+            externalId: job.externalId,
+            sourceType: job.sourceType,
+            sourceUrl: job.sourceUrl
+          } as any);
+        }
+      } catch (fetchErr) {
+        const msg = (fetchErr as Error).message || String(fetchErr);
+        fetchErrors.push(`${role}: ${msg}`);
+      }
+    }
+
+    if (newJobsQueue.length > 0) {
+      autopilotQueue = [...newJobsQueue, ...autopilotQueue];
+    }
+
+    const logLevel: "success" | "warn" | "error" =
+      newJobsQueue.length > 0 ? "success" :
+      fetchErrors.length > 0 ? "error" : "warn";
+
+    const logMessage = newJobsQueue.length > 0
+      ? `Adzuna live ingest: pulled ${totalFetched} listings across ${roles.length} queries, ingested ${newJobsQueue.length} new (de-duped).`
+      : fetchErrors.length > 0
+        ? `Adzuna live ingest failed: ${fetchErrors.join("; ")}`
+        : "Adzuna live ingest: no new unique listings found for the current query set.";
 
     autopilotLogs.unshift({
       id: `log-${Date.now()}-${autopilotLogCounter++}`,
       timestamp,
       cron: "job_ingest_cron",
-      level: "success",
-      message: `Crawl triggered. Found and ingested ${newJobsQueue.length} new relevant jobs (${newJobsQueue.map(j => j.jobTitle + "@" + j.companyName).join(", ")}) into normalized queues.`,
+      level: logLevel,
+      message: logMessage,
       type: "deterministic"
     });
-  } 
+  }
   
   else if (cronName === "job_rank_cron") {
     // Process "discovered" jobs to "scored"
@@ -1755,10 +1600,15 @@ function executeCronStage(cronName: string): string {
 }
 
 // HTTP trigger for cron stages (calls shared executor + returns state)
-app.post("/api/autopilot/trigger-cron", (req, res) => {
+app.post("/api/autopilot/trigger-cron", async (req, res) => {
   const { cronName } = req.body;
   if (!cronName) return res.status(400).json({ status: "error", message: "Missing cronName" });
-  executeCronStage(cronName);
+  try {
+    await executeCronStage(cronName);
+    persistAll();
+  } catch (err) {
+    console.error(`[trigger-cron] ${cronName} failed:`, err);
+  }
   res.json({
     status: "success",
     isRunning: autopilotIsRunning,
@@ -1790,122 +1640,22 @@ app.post("/api/autopilot/toggle", (req, res) => {
 // Continuous autopilot loop â€” cycles through all cron stages when running
 const AUTOPILOT_CYCLE_INTERVAL_MS = parseInt(process.env.AUTOPILOT_INTERVAL || "60000", 10);
 const AUTOPILOT_STAGES = ["job_ingest_cron", "job_rank_cron", "application_prepare_cron", "submission_cron", "gmail_sync_cron", "followup_cron"];
-setInterval(() => {
+setInterval(async () => {
   if (!autopilotIsRunning) return;
   for (const stage of AUTOPILOT_STAGES) {
     try {
-      executeCronStage(stage);
+      await executeCronStage(stage);
     } catch (e) {
       console.error(`Autopilot cycle error in ${stage}:`, e);
     }
   }
+  persistAll();
 }, AUTOPILOT_CYCLE_INTERVAL_MS);
 
 // Clear/Reset state machine queue
 app.post("/api/autopilot/reset", (req, res) => {
-  autopilotQueue = [
-    {
-      id: "aq-1",
-      jobTitle: "Senior Full Stack Dev - Remote",
-      companyName: "Stripe",
-      fitScore: 94,
-      seniority: "Senior",
-      compensation: "$165,000",
-      state: "tracked",
-      resumeVariant: "ATS - SaaS Expert",
-      lastActionDate: new Date(Date.now() - 3600000).toISOString(),
-      logs: [
-        "Job discovered via index crawler.",
-        "Job normalized with ID stripe-902.",
-        "Computed high-match fit score (94%) based on TypeScript & React match.",
-        "Assigned resume pre-set variant (ATS - SaaS Expert).",
-        "Field mapping matched 12 elements cleanly.",
-        "SubmissionGuard verified form payload.",
-        "Laid down browser worker: filling inputs on Lever submit form.",
-        "Form submission validation passed directly.",
-        "Confirmation page detected: HTTP 200 OK. Application registered.",
-        "Synced submission callback with Gmail sync, state set to tracked."
-      ],
-      selectorSnapshot: "Lever ATS. Form fields found: name, email, github, resume. All 100% matched.",
-      formPayload: { "name": "Jane Doe", "email": "hidden@example.com", "github": "github.com/hidden" }
-    },
-    {
-      id: "aq-2",
-      jobTitle: "Senior Software Architect",
-      companyName: "Okta Inc",
-      fitScore: 91,
-      seniority: "Senior/Lead",
-      compensation: "$180,000",
-      state: "validation_passed",
-      resumeVariant: "React + Cloud Security",
-      lastActionDate: new Date().toISOString(),
-      logs: [
-        "Job discovered through indexed Greenhouse postings crawler.",
-        "Title parsed successfully (Senior Software Architect).",
-        "Calculated fit score of 91% based on AWS microservices match.",
-        "Assigned tailored variant (React + Cloud Security).",
-        "Matched synonym inputs database for 14 custom fields.",
-        "No missing questionnaire markers. Validation passed."
-      ],
-      selectorSnapshot: "Greenhouse API structure. 14 targets identified. Ready for browser worker launch."
-    },
-    {
-      id: "aq-3",
-      jobTitle: "Cloud Infrastructure Dev",
-      companyName: "Vercel",
-      fitScore: 84,
-      seniority: "Senior",
-      compensation: "$150,000",
-      state: "prepared",
-      resumeVariant: "Default Core CV",
-      lastActionDate: new Date(Date.now() - 10000).toISOString(),
-      logs: [
-        "Discovered on candidate board.",
-        "Parsed required skills matches (Docker, AWS, Nodejs). Score calculated (84%).",
-        "Assigned core CV.",
-        "Filled candidate form template packets."
-      ]
-    },
-    {
-      id: "aq-4",
-      jobTitle: "Full-Stack Engineer - Backend focus",
-      companyName: "Snowflake",
-      fitScore: 71,
-      seniority: "Mid",
-      compensation: "$110,000",
-      state: "error",
-      errorType: "policy_blocked",
-      errorMessage: "Policy Limit: Compensation Floor Violation ($110,000 offered vs $120,000 limit).",
-      resumeVariant: "None Assigned",
-      lastActionDate: new Date(Date.now() - 5000).toISOString(),
-      logs: [
-        "Discovered on Snowflake board.",
-        "Scored match fit (71%).",
-        "Blocking trigger hit: Policy Engine blocked execution. Offer salary of $110,000 is below the strict $120,000 floor rule limit."
-      ]
-    },
-    {
-      id: "aq-5",
-      jobTitle: "React Engineer - Core Platform",
-      companyName: "Canva Studio",
-      fitScore: 89,
-      seniority: "Senior",
-      compensation: "$135,005",
-      state: "error",
-      errorType: "requires_user_input",
-      errorMessage: "Unmapped screening prompt question detected: 'What is the biggest deployment error you solved?'",
-      resumeVariant: "ATS - SaaS Expert",
-      lastActionDate: new Date(Date.now() - 2000).toISOString(),
-      logs: [
-        "Discovered on Lever aggregator.",
-        "Scored top tier match fit (89%).",
-        "Associated resume variant successfully.",
-        "Screening questions mapping triggered.",
-        "Unresolved open-ended text question detected. Direct response not cached in QuestionAnswerSkill registry. Moved to user intervention queue."
-      ],
-      selectorSnapshot: "Lever Form. Question selector input found but unfilled: field identifier 'deployment-bottleneck'."
-    }
-  ];
+  // Clear the queue. No mock re-seed. The next job_ingest_cron will pull live jobs from Adzuna.
+  autopilotQueue = [];
 
   autopilotLogs = [
     {
@@ -1913,12 +1663,13 @@ app.post("/api/autopilot/reset", (req, res) => {
       timestamp: new Date().toISOString(),
       cron: "system",
       level: "info",
-      message: "Autopilot state machine queue re-seeded with canonical demo records.",
+      message: "Autopilot queue cleared. Run job_ingest_cron to pull live jobs from Adzuna.",
       type: "deterministic"
     }
   ];
 
   res.json({ status: "success", queue: autopilotQueue, logs: autopilotLogs });
+  persistAll();
 });
 
 

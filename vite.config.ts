@@ -17,9 +17,9 @@ export default defineConfig(() => {
       hmr: process.env.DISABLE_HMR !== 'true',
       // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
       watch: process.env.DISABLE_HMR === 'true' ? null : {
-        // jobclaw-db.json is written by server.ts every 3 seconds via setInterval(saveState, 3000).
-        // Ignoring it prevents Vite HMR from triggering full page reloads on each write.
-        ignored: ['**/jobclaw-db.json'],
+        // Jobclaw server writes state to disk in .jobclaw-data/ and jobclaw-db.json on every change.
+        // Ignoring these prevents Vite HMR from triggering full page reloads on each write.
+        ignored: ['**/jobclaw-db.json', '**/.jobclaw-data/**'],
       },
     },
   };

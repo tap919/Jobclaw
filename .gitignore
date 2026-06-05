@@ -4,6 +4,7 @@ dist/
 coverage/
 htmlcov/
 jobclaw-db.json
+.jobclaw-data/
 .DS_Store
 *.log
 *.err
