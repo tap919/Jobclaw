@@ -1,3 +1,4 @@
+// C:/Users/User/Desktop/jobclaw/src/components/AdminWorkspace.tsx
 import React from "react";
 import WorkspaceStudioView from "./WorkspaceStudioView";
 import AnalyticsView from "./AnalyticsView";

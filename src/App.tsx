@@ -2,23 +2,15 @@ import React, { useState, useEffect, Component, ErrorInfo, ReactNode } from "rea
 import { RefreshCw } from "lucide-react";
 import { Profile, JobMatch, Application, AuditMessage, SectorPack } from "./types";
 import Navigation from "./components/Navigation";
-import ResumeStudioView from "./components/ResumeStudioView";
-import SectorPacksView from "./components/SectorPacksView";
-import AnalyticsView from "./components/AnalyticsView";
-import SettingsView from "./components/SettingsView";
-import WorkspaceStudioView from "./components/WorkspaceStudioView";
 import AdminWorkspace from "./components/AdminWorkspace";
 import ReviewWorkspace from "./components/ReviewWorkspace";
 import ResolveWorkspace from "./components/ResolveWorkspace";
 
-class ErrorBoundary extends React.Component<{ children: ReactNode }, { hasError: boolean; error: Error | null }> {
-  constructor(props: { children: ReactNode }) {
-    super(props);
-    this.state = { hasError: false, error: null };
-  }
+class ErrorBoundary extends React.Component<{ children: ReactNode }> {
+  state = { hasError: false, error: null as Error | null };
 
   static getDerivedStateFromError(error: Error) {
-    return { hasError: true, error };
+    return { hasError: true, error: null };
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
@@ -45,13 +37,19 @@ class ErrorBoundary extends React.Component<{ children: ReactNode }, { hasError:
         </div>
       );
     }
-    return this.props.children;
+    return (this as React.Component<{ children: ReactNode }>).props.children;
   }
 }
 
 export default function App() {
   const [activeWorkspace, setActiveWorkspace] = useState<string>("review");
+  const [currentTab, setCurrentTab] = useState<string>("dashboard");
   const [geminiConnected, setGeminiConnected] = useState<boolean | null>(null);
+
+  const handleNavigate = (workspace: string, tab: string) => {
+    setActiveWorkspace(workspace);
+    setCurrentTab(tab);
+  };
 
   // States
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -234,6 +232,7 @@ export default function App() {
         <Navigation
           activeTab={activeWorkspace}
           setActiveTab={setActiveWorkspace}
+          onNavigate={handleNavigate}
           geminiConnected={geminiConnected}
           profileName={profile.contactInfo.fullName}
         />
@@ -266,7 +265,11 @@ export default function App() {
                 jobs={jobs}
                 applications={applications}
                 audits={audits}
+                sectorPacks={sectorPacks}
+                selectedJobForTailoring={chosenTailorJob}
                 geminiConnected={geminiConnected}
+                activeTab={currentTab}
+                setActiveTab={setCurrentTab}
                 setActiveWorkspace={setActiveWorkspace}
                 onUpdateProfile={handleUpdateProfile}
                 onSelectJob={setChosenTailorJob}

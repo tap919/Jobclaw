@@ -1,0 +1,41 @@
+John Doe
+john.doe@email.com | (555) 123-4567 | Austin, TX
+linkedin.com/in/johndoe | github.com/johndoe
+
+PROFESSIONAL SUMMARY
+Senior Full-Stack Engineer with 8+ years of experience building scalable web applications, microservices, and cloud-native solutions. Proven track record of leading cross-functional teams to deliver high-impact products on schedule.
+
+WORK EXPERIENCE
+
+Senior Software Engineer | TechCorp Inc. | Austin, TX
+Jan 2021 - Present
+- Led migration of monolithic application to microservices architecture, reducing deployment time by 60%
+- Designed and implemented RESTful APIs serving 2M+ daily requests with 99.9% uptime
+- Mentored 4 junior engineers through structured code review and pair programming sessions
+- Reduced cloud infrastructure costs by 35% through resource optimization and auto-scaling policies
+
+Software Engineer | StartUpXYZ | San Francisco, CA
+Mar 2018 - Dec 2020
+- Built real-time data processing pipeline handling 500K+ events per day using Kafka and Node.js
+- Developed React-based dashboard used by 10K+ active users with sub-second load times
+- Implemented CI/CD pipeline reducing release cycle from 2 weeks to 2 days
+- Collaborated with product team to ship 15+ major features in agile environment
+
+Junior Developer | WebAgency | Austin, TX
+Jun 2016 - Feb 2018
+- Developed responsive web applications using React, TypeScript, and Node.js
+- Created automated test suites achieving 90%+ code coverage
+- Participated in 24/7 on-call rotation for production systems serving 100K+ users
+
+EDUCATION
+
+Bachelor of Science in Computer Science
+University of Texas at Austin | Graduated May 2016
+GPA: 3.7/4.0 | Dean's List
+
+SKILLS
+JavaScript/TypeScript, React, Node.js, Python, Go, PostgreSQL, MongoDB, Redis, Docker, Kubernetes, AWS, GCP, CI/CD, Microservices, REST APIs, GraphQL, Kafka, Terraform
+
+CERTIFICATIONS
+AWS Solutions Architect Professional (2022)
+Kubernetes Administrator (CKA) (2023)

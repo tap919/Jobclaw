@@ -20,13 +20,15 @@ interface NavigationProps {
   setActiveTab: (tab: string) => void;
   geminiConnected: boolean | null;
   profileName: string;
+  onNavigate?: (workspace: string, tab: string) => void;
 }
 
 export default function Navigation({
   activeTab,
   setActiveTab,
   geminiConnected,
-  profileName
+  profileName,
+  onNavigate
 }: NavigationProps) {
   const navGroups = [
     {
@@ -85,8 +87,8 @@ export default function Navigation({
 
       {/* Nav Link Items */}
       <nav className="flex-1 p-4 space-y-1.5 overflow-y-auto">
-        {navGroups.map((group) => (
-          <>
+        {navGroups.map((group, gi) => (
+          <React.Fragment key={gi}>
             <div className="px-3 pt-4 pb-1 text-xs font-medium text-[#4B4B4B] uppercase tracking-wider">
               {group.title}
             </div>
@@ -98,7 +100,20 @@ export default function Navigation({
                   <button
                     key={item.id}
                     id={`nav-tab-${item.id}`}
-                    onClick={() => setActiveTab(item.id)}
+                    onClick={() => {
+                        const workspaceMap: Record<string, string> = {
+                          Review: "review",
+                          Automate: "review",
+                          Resolve: "resolve",
+                          Admin: "admin"
+                        };
+                        const ws = workspaceMap[group.title] || "review";
+                        if (onNavigate) {
+                          onNavigate(ws, item.id);
+                        } else {
+                          setActiveTab(item.id);
+                        }
+                      }}
                     className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                       isActive
                         ? "bg-blue-600/10 text-blue-400 border-l-4 border-blue-500 pl-2 shadow-inner"
@@ -111,7 +126,7 @@ export default function Navigation({
                 );
               })}
             </div>
-          </>
+          </React.Fragment>
         ))}
       </nav>
 

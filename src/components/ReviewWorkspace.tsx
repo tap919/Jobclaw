@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Profile,
   JobMatch,
   Application,
   AuditMessage,
+  SectorPack,
   Experience,
   BulletPoint,
   GapExplanation,
   Education
 } from "../types";
+import ResumeStudioView from "./ResumeStudioView";
+import SectorPacksView from "./SectorPacksView";
 import {
   ShieldAlert,
   ArrowRight,
@@ -54,7 +57,11 @@ interface ReviewWorkspaceProps {
   jobs: JobMatch[];
   applications: Application[];
   audits: AuditMessage[];
+  sectorPacks: SectorPack[];
+  selectedJobForTailoring: JobMatch | null;
   geminiConnected: boolean | null;
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
   setActiveWorkspace: (workspace: string) => void;
   onUpdateProfile: (updated: Profile) => void;
   onSelectJob: (job: JobMatch) => void;
@@ -64,13 +71,22 @@ interface ReviewWorkspaceProps {
   onUpdateApplicationDocs: (id: string, coverLetter: string, outreachNotes: string) => void;
 }
 
+import DashboardView from "./DashboardView";
+import CareerVaultView from "./CareerVaultView";
+import JobsView from "./JobsView";
+import ApplicationsView from "./ApplicationsView";
+
 // --- Consolidated ReviewWorkspace Component ---
 const ReviewWorkspace: React.FC<ReviewWorkspaceProps> = ({
   profile,
   jobs,
   applications,
   audits,
+  sectorPacks,
+  selectedJobForTailoring,
   geminiConnected,
+  activeTab,
+  setActiveTab,
   setActiveWorkspace,
   onUpdateProfile,
   onSelectJob,
@@ -79,7 +95,6 @@ const ReviewWorkspace: React.FC<ReviewWorkspaceProps> = ({
   onUpdateApplicationStatus,
   onUpdateApplicationDocs
 }) => {
-  const [activeTab, setActiveTab] = useState<"dashboard" | "vault" | "jobs" | "applications" | "settings">("dashboard");
 
   return (
     <div className="space-y-8">
@@ -89,6 +104,8 @@ const ReviewWorkspace: React.FC<ReviewWorkspaceProps> = ({
         <button onClick={() => setActiveTab("jobs")}>Jobs</button>
         <button onClick={() => setActiveTab("applications")}>Applications</button>
         <button onClick={() => setActiveTab("vault")}>Vault</button>
+        <button onClick={() => setActiveTab("studio")}>Studio</button>
+        <button onClick={() => setActiveTab("sectors")}>Sectors</button>
       </div>
 
       {activeTab === "dashboard" && (
@@ -125,34 +142,20 @@ const ReviewWorkspace: React.FC<ReviewWorkspaceProps> = ({
           onUpdateApplicationDocs={onUpdateApplicationDocs}
         />
       )}
+      {activeTab === "studio" && (
+        <ResumeStudioView
+          profile={profile}
+          jobs={jobs}
+          selectedJobForTailoring={selectedJobForTailoring}
+          geminiConnected={geminiConnected}
+          onUpdateProfile={onUpdateProfile}
+        />
+      )}
+      {activeTab === "sectors" && (
+        <SectorPacksView packs={sectorPacks} />
+      )}
     </div>
   );
 };
-
-// --- Inlined Components ---
-
-// DashboardView (Content from DashboardView.tsx)
-const DashboardView = ({ profile, jobs, applications, audits, setActiveTab, onSelectJob, geminiConnected }: any) => {
-    // ... [Content of DashboardView.tsx, with minor adjustments if necessary]
-    return <div id="dashboard-view" className="space-y-6">Dashboard placeholder</div>; // Placeholder
-}
-
-// JobsView (Content from JobsView.tsx)
-const JobsView = ({ jobs, profile, onSelectJob, onIngestJob, onTriggerApplicationTracking }: any) => {
-    // ... [Content of JobsView.tsx, with minor adjustments if necessary]
-    return <div id="jobs-workspace-view" className="space-y-6">Jobs placeholder</div>; // Placeholder
-}
-
-// ApplicationsView (Content from ApplicationsView.tsx)
-const ApplicationsView = ({ applications, onUpdateApplicationStatus, onUpdateApplicationDocs }: any) => {
-    // ... [Content of ApplicationsView.tsx, with minor adjustments if necessary]
-    return <div id="applications-board-view" className="space-y-6">Applications placeholder</div>; // Placeholder
-}
-
-// CareerVaultView (Content from CareerVaultView.tsx)
-const CareerVaultView = ({ profile, onUpdateProfile, geminiConnected }: any) => {
-    // ... [Content of CareerVaultView.tsx, with minor adjustments if necessary]
-    return <div id="career-vault-view" className="space-y-6">Vault placeholder</div>; // Placeholder
-}
 
 export default ReviewWorkspace;
