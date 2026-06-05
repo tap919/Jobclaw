@@ -35,7 +35,9 @@ import {
   BookOpen,
   Link2,
   Users,
-  CheckSquare
+  CheckSquare,
+  Power,
+  PowerOff
 } from "lucide-react";
 import { QueueItem, AutopilotLog, AutopilotRuleSet, AutopilotSkillRegistry } from "../types";
 
@@ -49,6 +51,7 @@ const ResolveWorkspace: React.FC<ResolveWorkspaceProps> = ({ setActiveWorkspace 
   const [selectedQueueItem, setSelectedQueueItem] = useState<QueueItem | null>(null);
   const [queue, setQueue] = useState<QueueItem[]>([]);
   const [logs, setLogs] = useState<AutopilotLog[]>([]);
+  const [isRunning, setIsRunning] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [successToast, setSuccessToast] = useState<string | null>(null);
   const [cronCountdown, setCronCountdown] = useState<Record<string, number>>({
@@ -120,6 +123,7 @@ const ResolveWorkspace: React.FC<ResolveWorkspaceProps> = ({ setActiveWorkspace 
       if (data.status === "success") {
         setQueue(data.queue);
         setLogs(data.logs);
+        setIsRunning(data.isRunning);
         
         // Auto-select first queue item if none is selected
         if (data.queue.length > 0 && !selectedQueueItem) {
@@ -128,91 +132,41 @@ const ResolveWorkspace: React.FC<ResolveWorkspaceProps> = ({ setActiveWorkspace 
       }
     } catch (err) {
       console.error("Failed to load autopilot engine state in Resolve Workspace:", err);
-      // Load fallback mock data
-      setQueue([
-        {
-          id: "q1",
-          jobTitle: "Senior React Engineer",
-          companyName: "Stripe",
-          state: "tracked",
-          fitScore: 94,
-          compensation: "$160,000",
-          lastActionDate: new Date().toISOString(),
-          logs: [
-            "Ingested from Greenhouse successfully.",
-            "Computed fit score: 94% flat.",
-            "Prefill packages verified.",
-            "Form submitted cleanly, captured screenshot."
-          ]
-        },
-        {
-          id: "q2",
-          jobTitle: "Junior Java Developer",
-          companyName: "OldLegacy Corp",
-          state: "error",
-          errorType: "selector_changed",
-          fitScore: 41,
-          compensation: "$60,000",
-          lastActionDate: new Date().toISOString(),
-          errorMessage: "Policy violation: Compensation below floor ($120k). Form submission aborted automatically.",
-          logs: [
-            "Ingested from pastings.",
-            "Computed fit score: 41% (Below threshold 78%).",
-            "Aborted submission due to safety violations."
-          ]
-        },
-        {
-          id: "q3",
-          jobTitle: "Technical Writer",
-          companyName: "Figma",
-          state: "error",
-          errorType: "selector_changed",
-          fitScore: 81,
-          compensation: "$115,000",
-          lastActionDate: new Date().toISOString(),
-          errorMessage: "ATS structural change detected. Selector 'input[name=resume]' not found.",
-          logs: [
-            "Ingested Figma technical writer.",
-            "Computed fit score: 81%.",
-            "Initiating xpath fallback options...",
-            "All fallback selector attempts exhausted. Redirecting to manual review."
-          ]
-        }
-      ]);
-      setLogs([
-        { id: "l1", cron: "job_ingest_cron", level: "info", message: "Successfully polled active company watchlists.", timestamp: new Date().toISOString() },
-        { id: "l2", cron: "submission_cron", level: "error", message: "Selector failure during Figma Technical Writer submission.", timestamp: new Date().toISOString() }
-      ]);
+      setIsRunning(false);
     }
   };
 
   useEffect(() => {
-    loadEngineState();
-    
-    // Polling simulation just to keep timers alive
-    const interval = setInterval(() => {
-      const nextRnds = {
-         job_ingest_cron: Math.round(180 + Math.random() * 600),
-         job_rank_cron: Math.round(180 + Math.random() * 600),
-         application_prepare_cron: Math.round(180 + Math.random() * 600),
-         submission_cron: Math.round(180 + Math.random() * 600),
-         gmail_sync_cron: Math.round(180 + Math.random() * 600),
-         followup_cron: Math.round(180 + Math.random() * 600)
-      };
-      setCronCountdown(prev => {
-        const next = { ...prev };
-        Object.keys(next).forEach(k => {
-          if (next[k] <= 5) {
-            next[k] = nextRnds[k as keyof typeof nextRnds];
-          } else {
-            next[k] = next[k] - 1;
+    (async () => {
+      await loadEngineState();
+      // Auto-trigger job ingestion on first load if queue is empty
+      try {
+        const stateRes = await fetch("/api/autopilot/state");
+        const stateData = await stateRes.json();
+        if (stateData.status === "success" && stateData.queue.length === 0) {
+          for (const cron of ["job_ingest_cron", "job_rank_cron", "application_prepare_cron", "submission_cron"]) {
+            const res = await fetch("/api/autopilot/trigger-cron", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ cronName: cron })
+            });
+            const data = await res.json();
+            if (data.status === "success") {
+              setQueue(data.queue);
+              setLogs(data.logs);
+              setIsRunning(data.isRunning);
+            }
           }
-        });
-        return next;
-      });
-    }, 1000);
+        }
+      } catch (e) {
+        // Silent: initial state may not be loaded yet
+      }
+    })();
+    
+    // Auto-refresh state every 10 seconds
+    const refreshInterval = setInterval(loadEngineState, 10000);
 
-    return () => clearInterval(interval);
+    return () => clearInterval(refreshInterval);
   }, []);
 
   // Trigger individual cron simulators
@@ -248,9 +202,27 @@ const ResolveWorkspace: React.FC<ResolveWorkspaceProps> = ({ setActiveWorkspace 
     }
   };
 
-  // Reset/reseed queue
+  // Toggle autopilot ON/OFF
+  const handleToggleAutopilot = async () => {
+    try {
+      const res = await fetch("/api/autopilot/toggle", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+      });
+      const data = await res.json();
+      if (data.status === "success") {
+        setIsRunning(data.isRunning);
+        setLogs(data.logs);
+        triggerToast(`Autopilot ${data.isRunning ? "STARTED" : "STOPPED"} successfully`);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  // Reset queue
   const handleResetQueue = async () => {
-    if (window.confirm("Reseed Autopilot state machine queue with default demonstration records?")) {
+    if (window.confirm("Clear the autopilot queue and stop the current cycle? Next job_ingest_cron will pull fresh live jobs from Adzuna.")) {
       try {
         setActionLoading("reset");
         const res = await fetch("/api/autopilot/reset", { method: "POST" });
@@ -323,13 +295,33 @@ const ResolveWorkspace: React.FC<ResolveWorkspaceProps> = ({ setActiveWorkspace 
         </div>
 
         <div className="flex items-center gap-3 shrink-0">
+          {isRunning ? (
+            <button
+              type="button"
+              onClick={handleToggleAutopilot}
+              className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold font-mono transition-colors flex items-center gap-2"
+            >
+              <PowerOff className="h-3.5 w-3.5" />
+              <span>AUTOPILOT ON</span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleToggleAutopilot}
+              className="px-4 py-2.5 bg-[#18181B] border border-[#27272A] hover:bg-[#202023] hover:text-white rounded-lg text-xs font-semibold font-mono text-[#A1A1AA] transition-colors flex items-center gap-2"
+            >
+              <Power className="h-3.5 w-3.5" />
+              <span>Toggle Autopilot</span>
+            </button>
+          )}
+
           <button
             type="button"
             onClick={handleResetQueue}
             className="px-4 py-2.5 bg-[#18181B] border border-[#27272A] hover:bg-[#202023] hover:text-white rounded-lg text-xs font-semibold font-mono text-[#A1A1AA] transition-colors flex items-center gap-2"
           >
             <RefreshCw className="h-3.5 w-3.5" />
-            <span>Reset Demo Queue</span>
+            <span>Clear Queue</span>
           </button>
           
           <button
