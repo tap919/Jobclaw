@@ -1,8 +1,19 @@
 
 import React from 'react';
 import { Briefcase, FileText, CheckCircle, TrendingUp } from 'lucide-react';
+import { Profile, JobMatch, Application, AuditMessage } from '../types';
 
-const DashboardView = ({ profile, jobs, applications, audits, setActiveTab, onSelectJob, geminiConnected }: any) => {
+interface DashboardViewProps {
+  profile: Profile;
+  jobs: JobMatch[];
+  applications: Application[];
+  audits: AuditMessage[];
+  setActiveTab: (tab: string) => void;
+  onSelectJob: (job: JobMatch) => void;
+  geminiConnected: boolean;
+}
+
+const DashboardView: React.FC<DashboardViewProps> = ({ jobs, applications, audits, geminiConnected }) => {
   return (
     <div id="dashboard-view" className="space-y-6">
       <div className="flex items-center justify-between">

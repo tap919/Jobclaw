@@ -70,10 +70,12 @@ const ResolveWorkspace: React.FC<ResolveWorkspaceProps> = ({ setActiveWorkspace 
     };
   }, []);
 
+  const toastTimer = useRef<NodeJS.Timeout | null>(null);
   const triggerToast = (msg: string) => {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
     setSuccessToast(msg);
-    setTimeout(() => {
-      setSuccessToast(null);
+    toastTimer.current = setTimeout(() => {
+      if (isMounted.current) setSuccessToast(null);
     }, 3000);
   };
 
@@ -159,7 +161,7 @@ const ResolveWorkspace: React.FC<ResolveWorkspaceProps> = ({ setActiveWorkspace 
           }
         }
       } catch (e) {
-        // Silent: initial state may not be loaded yet
+        console.warn("[ResolveWorkspace] Initial auto-trigger failed:", e);
       }
     })();
     

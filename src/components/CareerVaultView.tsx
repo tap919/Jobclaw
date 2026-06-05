@@ -15,13 +15,13 @@ export default function CareerVaultView({ profile, onUpdateProfile, geminiConnec
   const [newRole, setNewRole] = useState("");
   const [newSector, setNewSector] = useState("");
 
-  const updateField = (section: string, field: string, value: any) => {
+  const updateField = (section: string, field: string, value: string | string[]) => {
     setForm(prev => {
       const next = { ...prev };
       if (section === "contact") {
         next.contactInfo = { ...next.contactInfo, [field]: value };
       } else {
-        (next as any)[field] = value;
+        (next as Record<string, unknown>)[field] = value;
       }
       return next;
     });

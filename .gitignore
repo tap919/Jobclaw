@@ -19,6 +19,7 @@ blink-test-*.png
 human-test-*.png
 human-test-*.txt
 debug-*.png
+test-autopilot.png
 _test_output.json
 metadata.json
 .env*

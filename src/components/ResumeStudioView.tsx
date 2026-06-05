@@ -48,7 +48,7 @@ export default function ResumeStudioView({
   // ATS report state
   const [atsScore, setAtsScore] = useState<number>(85);
   const [keywordCoverage, setKeywordCoverage] = useState<number>(80);
-  const [atsReport, setAtsReport] = useState<any>(null);
+  const [atsReport, setAtsReport] = useState<{ textExtractionQuality: string; issuesFound: string[]; recommendations: string[] } | null>(null);
   const [scanning, setScanning] = useState(false);
   const [tailoring, setTailoring] = useState(false);
 

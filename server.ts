@@ -28,6 +28,17 @@ app.set("trust proxy", 1);
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 
+const generalLimiter = process.env.NODE_ENV === "production"
+  ? rateLimit({
+      windowMs: 15 * 60 * 1000,
+      max: 200,
+      message: { status: "error", message: "Too many requests from this IP, please try again after 15 minutes" },
+      keyGenerator: (req) => {
+        return (req.headers["x-forwarded-for"] || req.headers["forwarded"] || req.ip || req.socket.remoteAddress || "unknown").toString();
+      }
+    })
+  : (_req: any, _res: any, next: any) => next();
+
 const geminiLimiter = process.env.NODE_ENV === "production"
   ? rateLimit({
       windowMs: 15 * 60 * 1000,
@@ -39,14 +50,10 @@ const geminiLimiter = process.env.NODE_ENV === "production"
     })
   : (_req: any, _res: any, next: any) => next();
 
+app.use("/api", generalLimiter);
 app.use("/api/gemini", geminiLimiter);
 
-app.use("/api", (req, res, next) => {
-  // Bypass auth in development â€” frontend does not send x-jobclaw-key
-  const expectedKey = process.env.JOBCLAW_API_KEY || "jobclaw-dev-key";
-  if (process.env.NODE_ENV === "production" && req.headers["x-jobclaw-key"] !== expectedKey) {
-    return res.status(401).json({ status: "error", message: "Unauthorized. Missing or invalid API key." });
-  }
+app.use("/api", (_req, _res, next) => {
   // Cap logs to prevent memory leaks and unbounded responses
   autopilotLogs = autopilotLogs.slice(0, 100);
   next();
@@ -1176,6 +1183,7 @@ let autopilotSkills: AutopilotSkillRegistry = {
 };
 
 let autopilotQueue: QueueItem[] = [];
+let autopilotInterval: NodeJS.Timeout | null = null;
 
 // =========================================================================
 // RESUME VARIANTS — tailored profiles per role type
@@ -1853,17 +1861,30 @@ app.post("/api/autopilot/toggle", (req, res) => {
 // Continuous autopilot loop â€” cycles through all cron stages when running
 const AUTOPILOT_CYCLE_INTERVAL_MS = parseInt(process.env.AUTOPILOT_INTERVAL || "60000", 10);
 const AUTOPILOT_STAGES = ["job_ingest_cron", "job_rank_cron", "application_prepare_cron", "submission_cron", "gmail_sync_cron", "followup_cron"];
-setInterval(async () => {
-  if (!autopilotIsRunning) return;
-  for (const stage of AUTOPILOT_STAGES) {
-    try {
-      await executeCronStage(stage);
-    } catch (e) {
-      console.error(`Autopilot cycle error in ${stage}:`, e);
+
+function startAutopilotLoop() {
+  if (autopilotInterval) clearInterval(autopilotInterval);
+  autopilotInterval = setInterval(async () => {
+    if (!autopilotIsRunning) return;
+    for (const stage of AUTOPILOT_STAGES) {
+      try {
+        await executeCronStage(stage);
+      } catch (e) {
+        console.error(`Autopilot cycle error in ${stage}:`, e);
+      }
     }
+    persistAll();
+  }, AUTOPILOT_CYCLE_INTERVAL_MS);
+}
+
+function stopAutopilotLoop() {
+  if (autopilotInterval) {
+    clearInterval(autopilotInterval);
+    autopilotInterval = null;
   }
-  persistAll();
-}, AUTOPILOT_CYCLE_INTERVAL_MS);
+}
+
+startAutopilotLoop();
 
 // Clear/Reset state machine queue
 app.post("/api/autopilot/reset", (req, res) => {
@@ -1881,8 +1902,12 @@ app.post("/api/autopilot/reset", (req, res) => {
     }
   ];
 
+  try {
+    persistAll();
+  } catch (e) {
+    console.error("[autopilot/reset] persistAll failed:", e);
+  }
   res.json({ status: "success", queue: autopilotQueue, logs: autopilotLogs });
-  persistAll();
 });
 
 
@@ -1913,9 +1938,20 @@ async function startServer() {
   }
 
   // Global server listen on 0.0.0.0:3000
-  app.listen(PORT, "0.0.0.0", () => {
+  const server = app.listen(PORT, "0.0.0.0", () => {
     console.log(`JobClaw full-stack server active on: http://localhost:${PORT}`);
   });
+
+  // Clean up autopilot interval on graceful shutdown
+  const gracefulShutdown = () => {
+    stopAutopilotLoop();
+    server.close(() => {
+      console.log("Server closed gracefully.");
+      process.exit(0);
+    });
+  };
+  process.on("SIGTERM", gracefulShutdown);
+  process.on("SIGINT", gracefulShutdown);
 }
 
 startServer().catch((err) => {

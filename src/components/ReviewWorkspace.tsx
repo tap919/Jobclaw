@@ -65,9 +65,9 @@ interface ReviewWorkspaceProps {
   setActiveWorkspace: (workspace: string) => void;
   onUpdateProfile: (updated: Profile) => void;
   onSelectJob: (job: JobMatch) => void;
-  onIngestJob: (jobData: any) => Promise<any>;
+  onIngestJob: (jobData: Partial<JobMatch>) => Promise<unknown>;
   onTriggerApplicationTracking: (jobId: string) => void;
-  onUpdateApplicationStatus: (id: string, status: any, policyStatus?: any, notes?: string) => void;
+  onUpdateApplicationStatus: (id: string, status: string, policyStatus?: string, notes?: string) => void;
   onUpdateApplicationDocs: (id: string, coverLetter: string, outreachNotes: string) => void;
 }
 

@@ -125,18 +125,33 @@ await step("3.2 Can trigger a job ingestion", async () => {
 });
 
 await step("3.3 Job count reflects new ingestion (state-based check)", async () => {
-  await page.reload({ waitUntil: "domcontentloaded" });
-  await page.waitForTimeout(1500);
-  await page.click("#nav-tab-jobs");
-  await page.waitForTimeout(1500);
-  const content = await page.locator("#jobclaw-application").innerText();
-  // JobsView is a stub that shows the count, not individual jobs
-  // Verify the count incremented from initial 3 to 4
-  const match = content.match(/Total Jobs:\s*(\d+)/);
-  if (!match) throw new Error("Jobs counter not found in view");
-  const count = parseInt(match[1]);
-  if (count < 4) throw new Error(`Expected at least 4 jobs after ingestion, got ${count}`);
-  log(`  Jobs counter: ${count} (includes new TestCorp ingestion)`);
+  // Get initial count before ingestion
+  const resBefore = await fetch(`${BASE}/api/jobs`);
+  const dataBefore = await resBefore.json();
+  const initialCount = dataBefore.jobs.length;
+
+  // Ingest a new job
+  await fetch(`${BASE}/api/jobs`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      title: "Test Senior Engineer",
+      company: "TestCorp",
+      description: "TypeScript React Node.js Docker AWS",
+      location: "Remote",
+      salary: "$150,000",
+      sourceUrl: "https://test.com"
+    })
+  });
+
+  // Verify count increased by 1
+  const resAfter = await fetch(`${BASE}/api/jobs`);
+  const dataAfter = await resAfter.json();
+  const newCount = dataAfter.jobs.length;
+  if (newCount !== initialCount + 1) {
+    throw new Error(`Expected ${initialCount + 1} jobs after ingestion, got ${newCount}`);
+  }
+  log(`  Jobs counter: ${newCount} (was ${initialCount}, +1 from ingestion)`);
   await snap("05-jobs-updated");
 });
 

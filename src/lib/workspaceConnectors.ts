@@ -499,12 +499,14 @@ export class DriveConnector implements DocumentStore {
       throw new Error(auth.restriction);
     }
 
+    const validTypes: WorkspaceFile["type"][] = ["PDF", "DOCX", "MD", "JSON"];
+    const fileType: WorkspaceFile["type"] = validTypes.includes(type as WorkspaceFile["type"]) ? (type as WorkspaceFile["type"]) : "PDF";
     const files = this.getStore();
     const newFile: WorkspaceFile = {
       id: `file-drv-${Date.now()}`,
       name: fileName,
       path: folderPath,
-      type: type as any,
+      type: fileType,
       size: `${Math.round(content.length / 1024) + 1} KB`,
       lastUpdated: new Date().toISOString()
     };

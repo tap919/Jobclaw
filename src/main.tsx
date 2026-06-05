@@ -3,21 +3,6 @@ import {createRoot} from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
 
-// Global fetch override to inject API key for basic auth
-const originalFetch = window.fetch;
-Object.defineProperty(window, 'fetch', {
-  configurable: true,
-  writable: true,
-  value: async (input: RequestInfo | URL, init?: RequestInit) => {
-    init = init || {};
-    init.headers = {
-      ...init.headers,
-      'x-jobclaw-key': 'jobclaw-dev-key'
-    };
-    return originalFetch(input, init);
-  }
-});
-
 // Handle OAuth dynamic popup callback message transmission securely
 if (window.location.hash && window.opener) {
   const params = new URLSearchParams(window.location.hash.substring(1));
