@@ -1,20 +1,28 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Jobclaw
 
-# Run and deploy your AI Studio app
+Jobclaw is a production-ready, AI-driven job hunt automation system. 
 
-This contains everything you need to run your app locally.
+## Features
+- **Autopilot Engine:** Deterministic job ingestion, ranking, and application submission pipeline.
+- **Resume Studio:** AI-powered ATS scanning and tailoring for specific job descriptions.
+- **Career Vault:** Manage your profile, skills, and application history.
+- **Performance:** Optimized backend with <10ms API latency and concurrent request handling.
+- **Security:** Hardened endpoints, request validation, and field allowlisting.
 
-View your app in AI Studio: https://ai.studio/apps/cbf85aa5-1908-4e63-9c80-698546202f12
+## Getting Started
 
-## Run Locally
+### Prerequisites
+- Node.js (v20+)
+- npm
 
-**Prerequisites:**  Node.js
+### Installation
+1. `npm install`
+2. Create `.env` from `.env.example`: `cp .env.example .env`
+3. Set `GEMINI_API_KEY` and `JOBCLAW_API_KEY` in `.env`.
 
+### Running
+- Development: `npm run dev`
+- Production Build: `npm run build`
+- Run Benchmark: `npm run benchmark`
+- Run Tests: `npm test`
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`

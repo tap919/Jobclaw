@@ -2,9 +2,16 @@
 // Tests: endpoint latency, autopilot pipeline throughput, concurrent user load
 
 const BASE = "http://localhost:3000";
+const JOBCLAW_API_KEY = process.env.JOBCLAW_API_KEY || "";
 const RESULTS = [];
 
 const log = (msg) => { console.log(msg); RESULTS.push(msg); };
+
+const authHeaders = () => {
+  const h = { "Content-Type": "application/json" };
+  if (JOBCLAW_API_KEY) h["x-jobclaw-key"] = JOBCLAW_API_KEY;
+  return h;
+};
 
 const timedFetch = async (method, path, body, iterations = 1) => {
   const times = [];
@@ -13,7 +20,7 @@ const timedFetch = async (method, path, body, iterations = 1) => {
     const t0 = performance.now();
     const res = await fetch(`${BASE}${path}`, {
       method,
-      headers: { "Content-Type": "application/json" },
+      headers: authHeaders(),
       body: body ? JSON.stringify(body) : undefined
     });
     lastBody = await res.json();

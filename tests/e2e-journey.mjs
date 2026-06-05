@@ -3,7 +3,7 @@ import { writeFileSync } from "fs";
 import { fileURLToPath } from "url";
 
 const BASE = "http://localhost:3000";
-const RESUME_PATH = "test-resume.txt";
+const RESUME_PATH = "tests/fixtures/test-resume.txt";
 const RESULTS = [];
 let errors = [];
 

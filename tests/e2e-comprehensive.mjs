@@ -72,7 +72,7 @@ await step("2.1", "Go to Resume Studio", async () => {
 });
 await step("2.2", "Upload resume", async () => {
   const input = page.locator("#resume-profile-file-picker");
-  await input.setInputFiles("test-resume.txt", { force: true, noWaitAfter: true });
+  await input.setInputFiles("tests/fixtures/test-resume.txt", { force: true, noWaitAfter: true });
   await page.waitForTimeout(4000);
   await snap("resume-uploaded");
 });
