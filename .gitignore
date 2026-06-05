@@ -15,6 +15,9 @@ journey-*.txt
 e2e-*.png
 e2e-*.txt
 blink-test-*.png
+human-test-*.png
+human-test-*.txt
+debug-*.png
 _test_output.json
 metadata.json
 .env*
