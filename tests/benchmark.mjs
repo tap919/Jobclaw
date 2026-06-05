@@ -77,14 +77,14 @@ const stages = ["job_ingest_cron", "job_rank_cron", "application_prepare_cron", 
 for (const stage of stages) {
   await fetch(`${BASE}/api/autopilot/trigger-cron`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: authHeaders(),
     body: JSON.stringify({ cronName: stage })
   });
 }
 const t1 = performance.now();
 log(`  Full 6-stage pipeline: ${(t1 - t0).toFixed(0)}ms total, ${((t1 - t0) / stages.length).toFixed(0)}ms per stage`);
 
-const stateRes = await fetch(`${BASE}/api/autopilot/state`);
+const stateRes = await fetch(`${BASE}/api/autopilot/state`, { headers: authHeaders() });
 const state = await stateRes.json();
 const stateCount = {};
 state.queue?.forEach(q => { stateCount[q.state] = (stateCount[q.state] || 0) + 1; });
@@ -96,7 +96,7 @@ log("");
 log("=== 4. Concurrent Load (20 parallel requests) ===");
 const t2 = performance.now();
 const concurrent = await Promise.all(
-  Array.from({ length: 20 }, () => fetch(`${BASE}/api/autopilot/state`).then(r => r.json()))
+  Array.from({ length: 20 }, () => fetch(`${BASE}/api/autopilot/state`, { headers: authHeaders() }).then(r => r.json()))
 );
 const t3 = performance.now();
 const totalTime = t3 - t2;
@@ -112,19 +112,19 @@ const t4 = performance.now();
 for (let i = 0; i < 10; i++) {
   await fetch(`${BASE}/api/autopilot/trigger-cron`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: authHeaders(),
     body: JSON.stringify({ cronName: "job_ingest_cron" })
   });
   await fetch(`${BASE}/api/autopilot/trigger-cron`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: authHeaders(),
     body: JSON.stringify({ cronName: "job_rank_cron" })
   });
 }
 const t5 = performance.now();
 log(`  10× ingest+rank cycle: ${(t5 - t4).toFixed(0)}ms`);
 
-const stateRes2 = await fetch(`${BASE}/api/autopilot/state`);
+const stateRes2 = await fetch(`${BASE}/api/autopilot/state`, { headers: authHeaders() });
 const state2 = await stateRes2.json();
 const state2Count = {};
 state2.queue?.forEach(q => { state2Count[q.state] = (state2Count[q.state] || 0) + 1; });
@@ -142,7 +142,7 @@ const sizes = [
   { path: "/api/autopilot/state", name: "autopilot/state" }
 ];
 for (const s of sizes) {
-  const r = await fetch(`${BASE}${s.path}`);
+  const r = await fetch(`${BASE}${s.path}`, { headers: authHeaders() });
   const text = await r.text();
   log(`  ${s.name.padEnd(20)} ${(text.length / 1024).toFixed(1)} KB`);
 }

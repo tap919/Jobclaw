@@ -19,18 +19,39 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # Or your project's Node.js version
+          node-version: '20'
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install dependencies (strict, from lockfile)
+        run: npm ci
 
       - name: Run TypeScript check
         run: npm run lint
 
-      # - name: Run E2E Tests (Optional, requires Playwright setup)
-      #   run: npm test
-      #   env:
-      #     NODE_ENV: development
-      #     JOBCLAW_API_KEY: ${{ secrets.JOBCLAW_API_KEY }}
-      #     GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      - name: Start dev server
+        run: npm run dev &
+        env:
+          JOBCLAW_API_KEY: ${{ secrets.JOBCLAW_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
+      - name: Wait for server to be ready
+        run: |
+          for i in {1..30}; do
+            if curl -sf http://localhost:3000/api/profile > /dev/null; then
+              echo "Server ready"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Server failed to start"
+          exit 1
+
+      - name: Run benchmark
+        run: npm run benchmark
+        env:
+          JOBCLAW_API_KEY: ${{ secrets.JOBCLAW_API_KEY }}
+
+      - name: Run human-perspective E2E
+        run: npm test
+        env:
+          JOBCLAW_API_KEY: ${{ secrets.JOBCLAW_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
