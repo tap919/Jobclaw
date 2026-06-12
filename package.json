@@ -13,10 +13,14 @@
     "clean": "rm -rf dist server.js",
     "preview": "vite preview",
     "lint": "tsc --noEmit",
-    "test": "npm run lint",
-    "test:e2e": "node tests/e2e-comprehensive.mjs",
-    "test:journey": "node tests/e2e-journey.mjs",
-    "benchmark": "node tests/benchmark.mjs"
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration",
+    "test": "npm run lint && npm run test:unit",
+    "test:all": "npm run test && npm run test:integration",
+    "test:e2e": "node tests/e2e/navtest.mjs || node tests/navtest.mjs 2>/dev/null",
+    "test:journey": "node tests/e2e/e2e-journey.mjs || node tests/e2e-journey.mjs 2>/dev/null",
+    "benchmark": "node tests/benchmark.mjs",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
@@ -43,6 +47,7 @@
     "tailwindcss": "^4.1.14",
     "tsx": "^4.21.0",
     "typescript": "~5.8.2",
-    "vite": "^6.2.3"
+    "vite": "^6.2.3",
+    "vitest": "^4.1.8"
   }
 }

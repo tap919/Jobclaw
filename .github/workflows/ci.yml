@@ -27,10 +27,12 @@ jobs:
       - name: Run TypeScript check
         run: npm run lint
 
+      - name: Run unit tests (Vitest, no server needed)
+        run: npx vitest run tests/unit
+
       - name: Start dev server
         run: npm run dev &
         env:
-          JOBCLAW_API_KEY: ${{ secrets.JOBCLAW_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
       - name: Wait for server to be ready
@@ -45,13 +47,11 @@ jobs:
           echo "Server failed to start"
           exit 1
 
+      - name: Run integration tests (Vitest, needs server)
+        run: npx vitest run tests/integration
+
       - name: Run benchmark
         run: npm run benchmark
-        env:
-          JOBCLAW_API_KEY: ${{ secrets.JOBCLAW_API_KEY }}
 
-      - name: Run human-perspective E2E
-        run: npm test
-        env:
-          JOBCLAW_API_KEY: ${{ secrets.JOBCLAW_API_KEY }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      - name: Run human-perspective E2E test
+        run: node tests/human-perspective-test.mjs
