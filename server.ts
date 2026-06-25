@@ -1912,6 +1912,62 @@ app.post("/api/autopilot/reset", (req, res) => {
 });
 
 
+// -------------------------------------------------------------
+// MUTLY INTEGRATION (Blocklabor Build Pipeline)
+// -------------------------------------------------------------
+
+app.get("/api/mutly/health", asyncHandler(async (_req, res) => {
+  const { checkMutlyHealth } = await import("./src/lib/mutly-client");
+  const healthy = await checkMutlyHealth();
+  res.json({ status: healthy ? "healthy" : "unreachable", reachable: healthy });
+}));
+
+app.post("/api/mutly/pipeline/start", asyncHandler(async (req, res) => {
+  const { projectDir } = req.body;
+  if (!projectDir) {
+    return res.status(400).json({ status: "error", message: "Missing projectDir in body." });
+  }
+  try {
+    const { startMutlyPipeline } = await import("./src/lib/mutly-client");
+    const result = await startMutlyPipeline(projectDir);
+    res.json({ status: "success", pipeline: result });
+  } catch (err: any) {
+    console.warn("Mutly pipeline start failed:", err?.message || err);
+    res.status(502).json({ status: "error", message: err?.message || "Mutly pipeline start failed" });
+  }
+}));
+
+app.get("/api/mutly/status", asyncHandler(async (_req, res) => {
+  try {
+    const { getMutlyStatus } = await import("./src/lib/mutly-client");
+    const status = await getMutlyStatus();
+    res.json({ status: "success", pipeline: status });
+  } catch (err: any) {
+    res.status(502).json({ status: "error", message: err?.message || "Mutly status failed" });
+  }
+}));
+
+app.post("/api/mutly/audit", asyncHandler(async (req, res) => {
+  const { projectPath } = req.body;
+  if (!projectPath) {
+    return res.status(400).json({ status: "error", message: "Missing projectPath in body." });
+  }
+  try {
+    const { auditProject } = await import("./src/lib/mutly-client");
+    const audit = await auditProject(projectPath);
+    res.json({ status: "success", audit });
+  } catch (err: any) {
+    res.status(502).json({ status: "error", message: err?.message || "Mutly audit failed" });
+  }
+}));
+
+app.get("/api/mutly/integration", asyncHandler(async (_req, res) => {
+  const { getIntegrationStatus } = await import("./src/lib/mutly-client");
+  const status = await getIntegrationStatus();
+  res.json(status);
+}));
+
+
 // Global error handler (catches asyncHandler rejections)
 app.use((err: any, _req: any, res: any, _next: any) => {
   console.error("Unhandled error:", err?.message || err);
