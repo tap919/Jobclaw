@@ -26,3 +26,10 @@ Jobclaw is a production-ready, AI-driven job hunt automation system.
 - Run Benchmark: `npm run benchmark`
 - Run Tests: `npm test`
 
+## Mutly Integration
+
+Jobclaw is designed to be benchmarked and extended by the Mutly autonomous agent system.
+
+- **Benchmarking**: Mutly uses Jobclaw as a sandbox to test its capabilities against real-world Express/React/Vite applications. See `docs/superpowers/specs/2026-06-05-mutly-jobclaw-benchmarking-design.md`.
+- **Build Pipeline**: Mutly can ingest Jobclaw's codebase, run RepoRank audits, and autonomously apply improvements.
+
