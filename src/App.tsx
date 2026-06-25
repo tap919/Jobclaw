@@ -44,7 +44,7 @@ class ErrorBoundary extends React.Component<{ children: ReactNode }> {
 export default function App() {
   const [activeWorkspace, setActiveWorkspace] = useState<string>("review");
   const [currentTab, setCurrentTab] = useState<string>("dashboard");
-  const [geminiConnected, setGeminiConnected] = useState<boolean | null>(null);
+  const [geminiConnected, setGeminiConnected] = useState<boolean>(false);
 
   const handleNavigate = (workspace: string, tab: string) => {
     setActiveWorkspace(workspace);

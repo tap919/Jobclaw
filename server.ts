@@ -482,6 +482,7 @@ app.post("/api/jobs", (req, res) => {
   if (!result.success) {
     return res.status(400).json({ status: "error", message: "Invalid job data format", errors: result.error.issues });
   }
+  // Explicit return for noImplicitReturns
 
   const { title, company, description, location, salary, sourceUrl } = result.data;
   
@@ -522,7 +523,7 @@ app.post("/api/jobs", (req, res) => {
 
   jobPool.unshift(newJob);
   persistAll();
-  res.json({ status: "success", message: "Job successfully ingested and scored.", job: newJob });
+  return res.json({ status: "success", message: "Job successfully ingested and scored.", job: newJob });
 });
 
 // Score a job match against the current profile using Gemini
@@ -699,7 +700,7 @@ app.patch("/api/applications/:id", (req, res) => {
   }
 
   persistAll();
-  res.json({ status: "success", message: "Pipeline status updated successfully.", application: applications[targetIdx] });
+  return res.json({ status: "success", message: "Pipeline status updated successfully.", application: applications[targetIdx] });
 });
 
 
@@ -1469,8 +1470,8 @@ app.post("/api/autopilot/update-skills", (req, res) => {
     type: "deterministic"
   });
 
-  res.json({ status: "success", skills: autopilotSkills, logs: autopilotLogs });
   persistAll();
+  return res.json({ status: "success", skills: autopilotSkills, logs: autopilotLogs });
 });
 
 // Shared cron stage executor (used by HTTP handler and continuous loop)
@@ -1495,7 +1496,7 @@ async function executeCronStage(cronName: string): Promise<string> {
         message: "ADZUNA_APP_ID and ADZUNA_APP_KEY are not set in .env. Skipping real job ingest. Sign up free at https://developer.adzuna.com/ and add credentials to enable live job discovery.",
         type: "deterministic"
       });
-      return;
+      return "skipped";
     }
 
     const roles = userProfile.targetRoles.length > 0 ? userProfile.targetRoles : ["Warehouse Associate"];
@@ -1518,7 +1519,7 @@ async function executeCronStage(cronName: string): Promise<string> {
         message: `Failed to load real job adapter: ${(err as Error).message}`,
         type: "deterministic"
       });
-      return;
+      return "error";
     }
 
     // Dedupe: skip external IDs we've already pulled in this run
@@ -1830,7 +1831,7 @@ app.post("/api/autopilot/trigger-cron", async (req, res) => {
   } catch (err) {
     console.error(`[trigger-cron] ${cronName} failed:`, err);
   }
-  res.json({
+  return res.json({
     status: "success",
     isRunning: autopilotIsRunning,
     lastRun: autopilotLastRun,

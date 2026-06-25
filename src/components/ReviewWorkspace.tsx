@@ -59,7 +59,7 @@ interface ReviewWorkspaceProps {
   audits: AuditMessage[];
   sectorPacks: SectorPack[];
   selectedJobForTailoring: JobMatch | null;
-  geminiConnected: boolean | null;
+  geminiConnected: boolean;
   activeTab: string;
   setActiveTab: (tab: string) => void;
   setActiveWorkspace: (workspace: string) => void;

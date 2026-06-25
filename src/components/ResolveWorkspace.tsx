@@ -577,8 +577,8 @@ const ResolveWorkspace: React.FC<ResolveWorkspaceProps> = ({ setActiveWorkspace 
                       onClick={() => {
                         triggerToast("Force overriding exception rules...");
                         setTimeout(() => {
-                          setQueue(prev => prev.map(q => q.id === selectedQueueItem.id ? { ...q, state: "tracked", errorType: null, errorMessage: null } : q));
-                          setSelectedQueueItem(prev => prev ? { ...prev, state: "tracked", errorType: null, errorMessage: null } : null);
+                          setQueue(prev => prev.map(q => q.id === selectedQueueItem.id ? { ...q, state: "tracked" } : q));
+                          setSelectedQueueItem(prev => prev ? { ...prev, state: "tracked" } : null);
                           triggerToast("Exception resolved and record forced to tracked.");
                         }, 1000);
                       }}

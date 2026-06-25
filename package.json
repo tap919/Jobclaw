@@ -13,14 +13,10 @@
     "clean": "rm -rf dist server.js",
     "preview": "vite preview",
     "lint": "tsc --noEmit",
-    "test:unit": "vitest run tests/unit",
-    "test:integration": "vitest run tests/integration",
-    "test": "npm run lint && npm run test:unit",
-    "test:all": "npm run test && npm run test:integration",
-    "test:e2e": "node tests/e2e/navtest.mjs || node tests/navtest.mjs 2>/dev/null",
-    "test:journey": "node tests/e2e/e2e-journey.mjs || node tests/e2e-journey.mjs 2>/dev/null",
-    "benchmark": "node tests/benchmark.mjs",
-    "test:watch": "vitest"
+    "test": "npm run lint",
+    "test:e2e": "node tests/e2e-comprehensive.mjs",
+    "test:journey": "node tests/e2e-journey.mjs",
+    "benchmark": "node tests/benchmark.mjs"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
@@ -40,6 +36,8 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^4.17.21",
     "@types/node": "^22.14.0",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.0.4",
     "autoprefixer": "^10.4.21",
     "esbuild": "^0.25.0",
@@ -48,6 +46,6 @@
     "tsx": "^4.21.0",
     "typescript": "~5.8.2",
     "vite": "^6.2.3",
-    "vitest": "^4.1.8"
+    "vitest": "^4.1.9"
   }
 }
