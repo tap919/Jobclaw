@@ -20,7 +20,6 @@ human-test-*.png
 human-test-*.txt
 debug-*.png
 test-autopilot.png
-.mutly-cache.json
 _test_output.json
 metadata.json
 .env*

@@ -68,6 +68,9 @@ export interface Profile {
   targetRoles: string[];
   salaryTarget: string;
   workAuthorization: string;
+  workerVerificationStatus?: 'pending' | 'verified' | 'flagged' | 'audited';
+  verificationVideoUrl?: string;
+  verificationIdPhotoUrl?: string;
 }
 
 export interface ResumeVariant {

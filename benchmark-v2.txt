@@ -1,0 +1,17 @@
+
+## Health (325ms)
+200
+
+## Agent status (8ms)
+Status: 401
+
+## Settings (merged config) (2ms)
+Status: 401
+
+## Pipeline run on Jobclaw (22ms)
+Status: 401
+Duration: 22ms
+Pipeline: N/A
+
+## RepoRank audit on Jobclaw (4ms)
+Status: 401

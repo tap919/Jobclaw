@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Profile } from "../types";
 import { Save, X, Plus, User, AtSign, Phone, MapPin, Globe, Github, Linkedin, Award, BookOpen, Target, DollarSign, ShieldCheck } from "lucide-react";
+import VideoVerification from "./VideoVerification";
+import EmployerAttestation, { EmployerAttestationRecord } from "./EmployerAttestation";
 
 interface CareerVaultProps {
   profile: Profile;
@@ -14,6 +16,22 @@ export default function CareerVaultView({ profile, onUpdateProfile, geminiConnec
   const [newSkill, setNewSkill] = useState("");
   const [newRole, setNewRole] = useState("");
   const [newSector, setNewSector] = useState("");
+  const [attestations, setAttestations] = useState<EmployerAttestationRecord[]>([]);
+
+  const handleVerificationComplete = (videoUrl: string, idPhotoUrl: string) => {
+    const updatedProfile: Profile = {
+      ...form,
+      verificationVideoUrl: videoUrl,
+      verificationIdPhotoUrl: idPhotoUrl,
+      workerVerificationStatus: 'pending', // Submit pending review
+    };
+    setForm(updatedProfile);
+    onUpdateProfile(updatedProfile);
+  };
+
+  const handleAddAttestation = (attestation: EmployerAttestationRecord) => {
+    setAttestations(prev => [...prev, attestation]);
+  };
 
   const updateField = (section: string, field: string, value: string | string[]) => {
     setForm(prev => {
@@ -252,6 +270,18 @@ export default function CareerVaultView({ profile, onUpdateProfile, geminiConnec
               </div>
             </div>
           </div>
+
+          {/* Video Verification */}
+          <VideoVerification
+            currentVerificationStatus={form.workerVerificationStatus || 'pending'}
+            onVerificationComplete={handleVerificationComplete}
+          />
+
+          {/* Employer-of-Record Attestation */}
+          <EmployerAttestation
+            attestations={attestations}
+            onAddAttestation={handleAddAttestation}
+          />
 
         </div>
       </div>

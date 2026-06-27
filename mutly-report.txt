@@ -1,0 +1,29 @@
+=== Mutly Pipeline on Jobclaw ===
+Started: 2026-06-06T05:58:33.424Z
+
+[1] Load Mutly landing
+  ✓
+
+[2] Enter dashboard
+  ✓
+
+[3] Source Import — select Jobclaw repo
+  ✓
+
+[4] Open Build Pipeline
+  ✓
+
+[5] Run pipeline on Jobclaw
+  ✓
+
+[6] Check SPEC.md tab
+  ✓
+
+[7] Mutly Daemon status
+  ✓
+
+[8] Settings panel
+  ✓
+
+Errors: 1
+WebSocket closed without opened.

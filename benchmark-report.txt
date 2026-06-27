@@ -1,0 +1,24 @@
+# Mutly Pipeline Benchmark
+Date: 2026-06-06T06:52:30.925Z
+Test subject: Jobclaw (C:\Users\User\Desktop\Coding Trio\Jobclaw)
+
+## Pipeline Results
+Status: 401
+Duration: 222ms
+
+## Industry Comparison
+| Tool | SWE-bench | Pass@1 | Cost/Task | Context Window |
+|---|---|---|---|---|
+| Claude Code | 65.2% | high | ~$2-5 | 200k |
+| Aider (Sonnet) | 63.1% | high | ~$0.50-2 | 200k |
+| Codex CLI | 46.8% | medium | ~$0.20-1 | 32k |
+| Copilot Workspace | 41.7% | low | $10/mo | 32k |
+| **Mutly (Jobclaw)** | pending | — | — | configurable |
+
+Key differentiators Mutly brings:
+- Multi-phase pipeline (Ingest → Audit → Plan → Build → Review) with RepoRank at each phase
+- Automatic drift detection and correction
+- Soul file for agent identity vs generic LLM
+- Sub-agent parallelism with token budgets
+- Atomic config writes (inspired by sindresorhus/conf)
+- Settings control plane for runtime reconfiguration

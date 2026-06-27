@@ -2,7 +2,7 @@ import { chromium } from "playwright";
 import { writeFileSync } from "fs";
 import { fileURLToPath } from "url";
 
-const BASE = "http://localhost:3000";
+const BASE = process.env.BASE_URL || "http://localhost:3000";
 const RESUME_PATH = "tests/fixtures/test-resume.txt";
 const RESULTS = [];
 let errors = [];

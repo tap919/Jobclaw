@@ -1,0 +1,41 @@
+  API: 200 /api/agent/public-config
+  API: 200 /api/agent/public-config
+  API: 401 /api/agent/status
+  API: 401 /api/agent/status
+  API: 200 /api/agent/public-config
+  API: 401 /api/agent/status
+
+## Health check
+  Status: 200
+  Body: {
+  "status": "ok",
+  "vibeserveReachable": true,
+  "killSwitch": false
+}
+
+## Agent status
+  Status: 401 Unauthorized
+
+## Settings API (merged config)
+  Main agent: true
+  Agent mode: auto
+  Soul: Mutly
+  Errors: 0
+
+## SPEC.md (pipeline plan)
+  SPEC.md visible: true
+  Body length: 337 chars
+
+## Build Pipeline view
+  API: 200 /api/agent/public-config
+  API: 401 /api/agent/status
+  Pipeline visible: true
+  Steps found: false
+
+## Settings pane
+  API: 200 /api/agent/public-config
+  API: 200 /api/agent/public-config
+  API: 200 /api/settings
+  API: 200 /api/settings
+  Settings tabs visible: true
+  Shows: Mutly |  | STATEFUL DAEMON |  | Source Import | Dashboard | SPEC.md | REPL Engine | Grep & AST | Mutly Daemon | Token Compactor | Secure Sandbox | Context Injector | IDE Integrations | Code Nexus Audit | Build Pipeline | Settings |  | M

@@ -22,7 +22,7 @@ const JobSchema = z.object({
 dotenv.config();
 
 const app = express();
-const PORT = parseInt(process.env.PORT || "3000", 10);
+const PORT = parseInt(process.env.PORT || "3002", 10);
 
 app.set("trust proxy", 1);
 app.use(cors());

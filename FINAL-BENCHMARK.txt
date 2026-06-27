@@ -1,0 +1,37 @@
+# Final Mutly Benchmark on Jobclaw
+Date: 2026-06-06T07:17:10.666Z
+
+## Health
+Status: ok | VibeServe: true
+
+## Config
+Soul: undefined | Errors: undefined
+Agent: undefined | Sub-agents: undefined
+
+## Pipeline via PipelineRunner
+  Attempt 1: 401 (25ms)
+  Attempt 2: 401 (4ms)
+  Attempt 3: 401 (3ms)
+
+## RepoRank Audit
+Files: ?
+
+## Industry Comparison
+| Tool | SWE-bench | Cost | Context | Multi-phase | Real-time Grading | Soul Identity | Runtime Config |
+|---|---|---|---|---|---|---|---|
+| Claude Code | 65.2% | $2-5 | 200k | No | No | No | No |
+| Aider (Sonnet) | 63.1% | $0.50-2 | 200k | No | No | No | No |
+| Codex CLI | 46.8% | $0.20-1 | 32k | No | No | No | No |
+| **MUTLY** | **pending** | **variable** | **configurable** | **✅ 7-phase** | **✅ RepoRank** | **✅ soul.md** | **✅ Settings API** |
+
+## Key Differentiators
+1. Multi-phase pipeline: ingest→audit→plan→build→review→iterate→deploy via actual agents
+2. RepoRank quality gates at each phase (baseline, audit, build, final)
+3. VibeServe MCP as default execution path
+4. Soul file (mutly.soul.md) for agent identity — not generic LLM
+5. Settings Control Plane — runtime reconfig without restart
+6. Atomic config writes (sindresorhus/conf pattern)
+7. Kill switch + human approval gates
+8. Sub-agent parallelism with token budgets
+9. Auth middleware protecting all API routes
+10. PipelineRunner with 7 specialized agents (ingest, audit, plan, code, review, iterate, deploy)

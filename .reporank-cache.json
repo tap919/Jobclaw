@@ -1,0 +1,488 @@
+{
+  "C:\\Users\\User\\Desktop\\Coding Trio\\Jobclaw\\server.ts": {
+    "hash": "ac42262edccdabda0f0be46e96234a714243ae20e10a9abb524eeacdcdf3010b",
+    "findings": [
+      {
+        "category": "quality",
+        "severity": "medium",
+        "line": 40,
+        "type": "any-type-abuse",
+        "description": "Use of `any` defeats TypeScript type safety",
+        "recommendation": "Replace with proper types, generics, or `unknown` for values that need narrowing",
+        "confidence": 0.85,
+        "path": "server.ts"
+      },
+      {
+        "category": "quality",
+        "severity": "high",
+        "line": 1867,
+        "type": "resource-leak",
+        "description": "setInterval used without clearInterval — memory leak if component unmounts",
+        "recommendation": "Store the interval ID and call clearInterval() in a cleanup function",
+        "confidence": 0.7,
+        "path": "server.ts"
+      },
+      {
+        "category": "quality",
+        "severity": "high",
+        "line": 1926,
+        "type": "no-error-handling",
+        "description": "await used without try/catch — unhandled rejection will crash the process",
+        "recommendation": "Wrap awaits in try/catch, log the error, and handle failures gracefully",
+        "confidence": 0.6,
+        "path": "server.ts"
+      },
+      {
+        "category": "quality",
+        "severity": "low",
+        "line": 80,
+        "type": "debug-code",
+        "description": "console.log/debug statements should be removed from production code",
+        "recommendation": "Use a proper logger (pino, winston, structlog) with appropriate log levels",
+        "confidence": 0.5,
+        "path": "server.ts"
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "line": 1,
+        "type": "deep-nesting",
+        "description": "Six or more levels of indentation — readability hit",
+        "recommendation": "Use early returns (guard clauses) or extract nested logic into named functions",
+        "confidence": 0.5,
+        "path": "server.ts"
+      }
+    ],
+    "timestamp": 1781032813353
+  },
+  "C:\\Users\\User\\Desktop\\Coding Trio\\Jobclaw\\src\\App.tsx": {
+    "hash": "49b584d218e83aa7902b406ad3a1edf73252139a9fea5ab69c5a998fb7540163",
+    "findings": [
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "line": 1,
+        "type": "deep-nesting",
+        "description": "Six or more levels of indentation — readability hit",
+        "recommendation": "Use early returns (guard clauses) or extract nested logic into named functions",
+        "confidence": 0.5,
+        "path": "src/App.tsx"
+      }
+    ],
+    "timestamp": 1781032813369
+  },
+  "C:\\Users\\User\\Desktop\\Coding Trio\\Jobclaw\\src\\components\\AdminWorkspace.tsx": {
+    "hash": "94b7b493a01eabbfaae57356e584ce2856231ef14282ccecce850a9809e0146e",
+    "findings": [
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "line": 1,
+        "type": "deep-nesting",
+        "description": "Six or more levels of indentation — readability hit",
+        "recommendation": "Use early returns (guard clauses) or extract nested logic into named functions",
+        "confidence": 0.5,
+        "path": "src/components/AdminWorkspace.tsx"
+      }
+    ],
+    "timestamp": 1781032813375
+  },
+  "C:\\Users\\User\\Desktop\\Coding Trio\\Jobclaw\\src\\components\\AnalyticsView.tsx": {
+    "hash": "9409fab39304f87260a3b1336c90253f4fc1ae6ea78d16b255e54233a9c83ad5",
+    "findings": [
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "line": 1,
+        "type": "deep-nesting",
+        "description": "Six or more levels of indentation — readability hit",
+        "recommendation": "Use early returns (guard clauses) or extract nested logic into named functions",
+        "confidence": 0.5,
+        "path": "src/components/AnalyticsView.tsx"
+      }
+    ],
+    "timestamp": 1781032813385
+  },
+  "C:\\Users\\User\\Desktop\\Coding Trio\\Jobclaw\\src\\components\\ApplicationsView.tsx": {
+    "hash": "9fa846494d05a6ddb5408519cdfa5cb56e646395377aad54633eef652e45b3e3",
+    "findings": [
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "line": 1,
+        "type": "deep-nesting",
+        "description": "Six or more levels of indentation — readability hit",
+        "recommendation": "Use early returns (guard clauses) or extract nested logic into named functions",
+        "confidence": 0.5,
+        "path": "src/components/ApplicationsView.tsx"
+      }
+    ],
+    "timestamp": 1781032813391
+  },
+  "C:\\Users\\User\\Desktop\\Coding Trio\\Jobclaw\\src\\components\\CareerVaultView.tsx": {
+    "hash": "ce97f4bfb24c76b0171d3bc72ea881b1a995443db0f2ab616b0fb3139f78cf7b",
+    "findings": [
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "line": 1,
+        "type": "deep-nesting",
+        "description": "Six or more levels of indentation — readability hit",
+        "recommendation": "Use early returns (guard clauses) or extract nested logic into named functions",
+        "confidence": 0.5,
+        "path": "src/components/CareerVaultView.tsx"
+      }
+    ],
+    "timestamp": 1781032813406
+  },
+  "C:\\Users\\User\\Desktop\\Coding Trio\\Jobclaw\\src\\components\\DashboardView.tsx": {
+    "hash": "3b19043900799f4c9911ee1d5018e8505b4d2d5c99cd1336304ac26f3f1ad24c",
+    "findings": [
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "line": 1,
+        "type": "deep-nesting",
+        "description": "Six or more levels of indentation — readability hit",
+        "recommendation": "Use early returns (guard clauses) or extract nested logic into named functions",
+        "confidence": 0.5,
+        "path": "src/components/DashboardView.tsx"
+      }
+    ],
+    "timestamp": 1781032813410
+  },
+  "C:\\Users\\User\\Desktop\\Coding Trio\\Jobclaw\\src\\components\\JobsView.tsx": {
+    "hash": "b96ea2aba87530074cff855327db084495e80ff78a135a7985f4b2f5e91fd959",
+    "findings": [
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "line": 1,
+        "type": "deep-nesting",
+        "description": "Six or more levels of indentation — readability hit",
+        "recommendation": "Use early returns (guard clauses) or extract nested logic into named functions",
+        "confidence": 0.5,
+        "path": "src/components/JobsView.tsx"
+      }
+    ],
+    "timestamp": 1781032813416
+  },
+  "C:\\Users\\User\\Desktop\\Coding Trio\\Jobclaw\\src\\components\\Navigation.tsx": {
+    "hash": "160d402fc33ced160256d7f6307f337c824ce53a995cdcb2c555170805f341d0",
+    "findings": [
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "line": 1,
+        "type": "deep-nesting",
+        "description": "Six or more levels of indentation — readability hit",
+        "recommendation": "Use early returns (guard clauses) or extract nested logic into named functions",
+        "confidence": 0.5,
+        "path": "src/components/Navigation.tsx"
+      }
+    ],
+    "timestamp": 1781032813421
+  },
+  "C:\\Users\\User\\Desktop\\Coding Trio\\Jobclaw\\src\\components\\ResolveWorkspace.tsx": {
+    "hash": "95c95394f1dccfe2e4b908fe74fa7a4d0fbffb76802f03f7478dec1d37c5da82",
+    "findings": [
+      {
+        "category": "quality",
+        "severity": "high",
+        "line": 169,
+        "type": "resource-leak",
+        "description": "setInterval used without clearInterval — memory leak if component unmounts",
+        "recommendation": "Store the interval ID and call clearInterval() in a cleanup function",
+        "confidence": 0.7,
+        "path": "src/components/ResolveWorkspace.tsx"
+      },
+      {
+        "category": "quality",
+        "severity": "high",
+        "line": 143,
+        "type": "no-error-handling",
+        "description": "await used without try/catch — unhandled rejection will crash the process",
+        "recommendation": "Wrap awaits in try/catch, log the error, and handle failures gracefully",
+        "confidence": 0.6,
+        "path": "src/components/ResolveWorkspace.tsx"
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "line": 1,
+        "type": "deep-nesting",
+        "description": "Six or more levels of indentation — readability hit",
+        "recommendation": "Use early returns (guard clauses) or extract nested logic into named functions",
+        "confidence": 0.5,
+        "path": "src/components/ResolveWorkspace.tsx"
+      }
+    ],
+    "timestamp": 1781032813472
+  },
+  "C:\\Users\\User\\Desktop\\Coding Trio\\Jobclaw\\src\\components\\ResumeStudioView.tsx": {
+    "hash": "75bb5f4c07af334831395dceeb87603b3f88e5cf44d8a80b58fc0375814f944d",
+    "findings": [
+      {
+        "category": "quality",
+        "severity": "high",
+        "line": 102,
+        "type": "no-error-handling",
+        "description": "await used without try/catch — unhandled rejection will crash the process",
+        "recommendation": "Wrap awaits in try/catch, log the error, and handle failures gracefully",
+        "confidence": 0.6,
+        "path": "src/components/ResumeStudioView.tsx"
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "line": 1,
+        "type": "deep-nesting",
+        "description": "Six or more levels of indentation — readability hit",
+        "recommendation": "Use early returns (guard clauses) or extract nested logic into named functions",
+        "confidence": 0.5,
+        "path": "src/components/ResumeStudioView.tsx"
+      }
+    ],
+    "timestamp": 1781032813604
+  },
+  "C:\\Users\\User\\Desktop\\Coding Trio\\Jobclaw\\src\\components\\ReviewWorkspace.tsx": {
+    "hash": "96819a6f066396db9a78c93893e209722aa9aec5951fed037166d4c05b6ad99f",
+    "findings": [
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "line": 1,
+        "type": "deep-nesting",
+        "description": "Six or more levels of indentation — readability hit",
+        "recommendation": "Use early returns (guard clauses) or extract nested logic into named functions",
+        "confidence": 0.5,
+        "path": "src/components/ReviewWorkspace.tsx"
+      }
+    ],
+    "timestamp": 1781032813610
+  },
+  "C:\\Users\\User\\Desktop\\Coding Trio\\Jobclaw\\src\\components\\SectorPacksView.tsx": {
+    "hash": "f074110c6e9224ddd99ed93b14c8d172d3b6d4741e333b8fe9d2408192827ce5",
+    "findings": [
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "line": 1,
+        "type": "deep-nesting",
+        "description": "Six or more levels of indentation — readability hit",
+        "recommendation": "Use early returns (guard clauses) or extract nested logic into named functions",
+        "confidence": 0.5,
+        "path": "src/components/SectorPacksView.tsx"
+      }
+    ],
+    "timestamp": 1781032813617
+  },
+  "C:\\Users\\User\\Desktop\\Coding Trio\\Jobclaw\\src\\components\\SettingsView.tsx": {
+    "hash": "06f66dead431834399f7caca7d9bc2acf58ac5fccdec01f68faa0b9b727f29ff",
+    "findings": [
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "line": 1,
+        "type": "deep-nesting",
+        "description": "Six or more levels of indentation — readability hit",
+        "recommendation": "Use early returns (guard clauses) or extract nested logic into named functions",
+        "confidence": 0.5,
+        "path": "src/components/SettingsView.tsx"
+      }
+    ],
+    "timestamp": 1781032813624
+  },
+  "C:\\Users\\User\\Desktop\\Coding Trio\\Jobclaw\\src\\components\\WorkspaceStudioView.tsx": {
+    "hash": "02e6e4b69a3a858c07e65ee9641afe0e4ee85013334e316ea8ce704cc831b767",
+    "findings": [
+      {
+        "category": "quality",
+        "severity": "medium",
+        "line": 152,
+        "type": "any-type-abuse",
+        "description": "Use of `any` defeats TypeScript type safety",
+        "recommendation": "Replace with proper types, generics, or `unknown` for values that need narrowing",
+        "confidence": 0.85,
+        "path": "src/components/WorkspaceStudioView.tsx"
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "line": 1,
+        "type": "deep-nesting",
+        "description": "Six or more levels of indentation — readability hit",
+        "recommendation": "Use early returns (guard clauses) or extract nested logic into named functions",
+        "confidence": 0.5,
+        "path": "src/components/WorkspaceStudioView.tsx"
+      }
+    ],
+    "timestamp": 1781032813867
+  },
+  "C:\\Users\\User\\Desktop\\Coding Trio\\Jobclaw\\src\\lib\\workspaceConnectors.ts": {
+    "hash": "94c2b16110bc1f07a29fab0371f64b88a4be275f1566d7e831440970b7dba173",
+    "findings": [
+      {
+        "category": "quality",
+        "severity": "high",
+        "line": 88,
+        "type": "resource-leak",
+        "description": "setInterval used without clearInterval — memory leak if component unmounts",
+        "recommendation": "Store the interval ID and call clearInterval() in a cleanup function",
+        "confidence": 0.7,
+        "path": "src/lib/workspaceConnectors.ts"
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "line": 1,
+        "type": "deep-nesting",
+        "description": "Six or more levels of indentation — readability hit",
+        "recommendation": "Use early returns (guard clauses) or extract nested logic into named functions",
+        "confidence": 0.5,
+        "path": "src/lib/workspaceConnectors.ts"
+      },
+      {
+        "category": "maintainability",
+        "severity": "medium",
+        "line": 9,
+        "type": "long-function",
+        "description": "Function body exceeds ~50 lines — likely doing too much",
+        "recommendation": "Extract cohesive blocks into named helpers; aim for ≤30 lines per function",
+        "confidence": 0.3,
+        "path": "src/lib/workspaceConnectors.ts"
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "line": 9,
+        "type": "missing-test-coverage",
+        "description": "Exported function with no obvious test file reference",
+        "recommendation": "Add a test file (e.g. foo.test.ts) covering the happy path and key edge cases",
+        "confidence": 0.2,
+        "path": "src/lib/workspaceConnectors.ts"
+      }
+    ],
+    "timestamp": 1781032813922
+  },
+  "C:\\Users\\User\\Desktop\\Coding Trio\\Jobclaw\\src\\main.tsx": {
+    "hash": "16759ce6610612c1d910906e46d80e3818fa9498abc1895a82dc8309961df5c8",
+    "findings": [
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "line": 1,
+        "type": "deep-nesting",
+        "description": "Six or more levels of indentation — readability hit",
+        "recommendation": "Use early returns (guard clauses) or extract nested logic into named functions",
+        "confidence": 0.5,
+        "path": "src/main.tsx"
+      }
+    ],
+    "timestamp": 1781032813926
+  },
+  "C:\\Users\\User\\Desktop\\Coding Trio\\Jobclaw\\src\\server\\lib\\persistence.ts": {
+    "hash": "4575f69a8cbdc51e7981f596db19d7c951ce20c48d636bd5ad8235f1137da0da",
+    "findings": [
+      {
+        "category": "performance",
+        "severity": "high",
+        "line": 40,
+        "type": "blocking-event-loop",
+        "description": "Synchronous I/O blocks the event loop in async contexts",
+        "recommendation": "Use the async variant (readFile, writeFile, exec) in request handlers",
+        "confidence": 0.6,
+        "path": "src/server/lib/persistence.ts"
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "line": 1,
+        "type": "deep-nesting",
+        "description": "Six or more levels of indentation — readability hit",
+        "recommendation": "Use early returns (guard clauses) or extract nested logic into named functions",
+        "confidence": 0.5,
+        "path": "src/server/lib/persistence.ts"
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "line": 34,
+        "type": "missing-test-coverage",
+        "description": "Exported function with no obvious test file reference",
+        "recommendation": "Add a test file (e.g. foo.test.ts) covering the happy path and key edge cases",
+        "confidence": 0.2,
+        "path": "src/server/lib/persistence.ts"
+      }
+    ],
+    "timestamp": 1781032813931
+  },
+  "C:\\Users\\User\\Desktop\\Coding Trio\\Jobclaw\\src\\server\\lib\\realJobAdapter.ts": {
+    "hash": "3b3a9ebfd98b549aecdacff65b61981f7e957896ef190a026f1fe15beaca5340",
+    "findings": [
+      {
+        "category": "quality",
+        "severity": "medium",
+        "line": 96,
+        "type": "any-type-abuse",
+        "description": "Use of `any` defeats TypeScript type safety",
+        "recommendation": "Replace with proper types, generics, or `unknown` for values that need narrowing",
+        "confidence": 0.85,
+        "path": "src/server/lib/realJobAdapter.ts"
+      },
+      {
+        "category": "quality",
+        "severity": "high",
+        "line": 81,
+        "type": "no-error-handling",
+        "description": "await used without try/catch — unhandled rejection will crash the process",
+        "recommendation": "Wrap awaits in try/catch, log the error, and handle failures gracefully",
+        "confidence": 0.6,
+        "path": "src/server/lib/realJobAdapter.ts"
+      },
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "line": 1,
+        "type": "deep-nesting",
+        "description": "Six or more levels of indentation — readability hit",
+        "recommendation": "Use early returns (guard clauses) or extract nested logic into named functions",
+        "confidence": 0.5,
+        "path": "src/server/lib/realJobAdapter.ts"
+      }
+    ],
+    "timestamp": 1781032813940
+  },
+  "C:\\Users\\User\\Desktop\\Coding Trio\\Jobclaw\\src\\types.ts": {
+    "hash": "6f85ba618c8ca693637d0640e32065d8cbe744ca78bcf5a9d3d131f0ad3ca520",
+    "findings": [
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "line": 1,
+        "type": "deep-nesting",
+        "description": "Six or more levels of indentation — readability hit",
+        "recommendation": "Use early returns (guard clauses) or extract nested logic into named functions",
+        "confidence": 0.5,
+        "path": "src/types.ts"
+      }
+    ],
+    "timestamp": 1781032813952
+  },
+  "C:\\Users\\User\\Desktop\\Coding Trio\\Jobclaw\\vite.config.ts": {
+    "hash": "ae7f5e2f3adb8ba74cf3e06ff043a9739b6379416f2a12550daace6c0c87d091",
+    "findings": [
+      {
+        "category": "maintainability",
+        "severity": "low",
+        "line": 1,
+        "type": "deep-nesting",
+        "description": "Six or more levels of indentation — readability hit",
+        "recommendation": "Use early returns (guard clauses) or extract nested logic into named functions",
+        "confidence": 0.5,
+        "path": "vite.config.ts"
+      }
+    ],
+    "timestamp": 1781032813956
+  }
+}
